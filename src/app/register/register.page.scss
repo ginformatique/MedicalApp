@@ -1,0 +1,29 @@
+
+.register-container {
+  max-width: 400px;
+  margin-top: 50px;
+  padding: 20px;
+}
+
+.register-form {
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 15px;
+    --highlight-color: var(--ion-color-primary);
+  }
+}
+
+.register-button {
+  margin: 20px 0;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
+}

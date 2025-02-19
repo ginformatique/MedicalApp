@@ -1,3 +1,91 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane contentId="main-content">
+    <!-- Menu latéral -->
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-list>
+          <ion-item routerLink="/home" routerLinkActive="selected">
+            <ion-icon name="home-outline" slot="start"></ion-icon>
+            <ion-label>Accueil</ion-label>
+          </ion-item>
+          <ion-item routerLink="/doctors" routerLinkActive="selected">
+            <ion-icon name="people-outline" slot="start"></ion-icon>
+            <ion-label>Médecins</ion-label>
+          </ion-item>
+          <ion-item routerLink="/categories" routerLinkActive="selected">
+            <ion-icon name="list-outline" slot="start"></ion-icon>
+            <ion-label>Catégories</ion-label>
+          </ion-item>
+          <ion-item routerLink="/map" routerLinkActive="selected">
+            <ion-icon name="location-outline" slot="start"></ion-icon>
+            <ion-label>Carte</ion-label>
+          </ion-item>
+          <ion-item routerLink="/appointments" routerLinkActive="selected">
+            <ion-icon name="calendar-outline" slot="start"></ion-icon>
+            <ion-label>Rendez-vous</ion-label>
+          </ion-item>
+          <ion-item routerLink="/login" routerLinkActive="selected">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-label>Connexion</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+
+    <!-- Contenu principal -->
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+
+  <!-- En-tête -->
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Patient care+</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Footer -->
+  <ion-footer>
+    <ion-toolbar>
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="3" class="ion-text-center">
+            <ion-button routerLink="/home"  fill="clear">
+              <ion-icon slot="icon-only" name="home"></ion-icon>
+              <ion-label>Accueil</ion-label>
+            </ion-button>
+          </ion-col>
+          
+          <ion-col size="3" class="ion-text-center">
+            <ion-button fill="clear">
+              <ion-icon slot="icon-only" name="people"></ion-icon>
+              <ion-label>Patients</ion-label>
+            </ion-button>
+          </ion-col>
+          
+          <ion-col size="3" class="ion-text-center">
+            <ion-button fill="clear">
+              <ion-icon slot="icon-only" name="calendar"></ion-icon>
+              <ion-label>Agenda</ion-label>
+            </ion-button>
+          </ion-col>
+          
+          <ion-col size="3" class="ion-text-center">
+            <ion-button fill="clear">
+              <ion-icon slot="icon-only" name="person"></ion-icon>
+              <ion-label>Profil</ion-label>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+  </ion-footer>
 </ion-app>

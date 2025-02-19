@@ -1,27 +1,176 @@
-#container {
-  text-align: center;
+ion-content {
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  --background: #f4f4f4;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+
+.ad-section {
+  margin-top: 50px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  //margin-bottom: 7px;
+
+  .carousel {
+    width: 100%;
+    position: relative;
+  }
+
+  .carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .carousel-item {
+    min-width: 100%;
+    box-sizing: border-box;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 18px;
+  }
+
+  .prev {
+    left: 10px;
+  }
+
+  .next {
+    right: 10px;
+  }
+}
+/* Carrousel publicitaire */
+.ad-carousel {
+  height: 200px;
+  ion-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.rounded-searchbar {
+  --border-radius: 50px;
+  --padding-start: 16px; 
+  --padding-end: 16px; 
 }
 
-#container a {
-  text-decoration: none;
+.search-section {
+
+  padding: 10px;
+  
+}
+
+/* Liste des médecins */
+ion-list {
+  background: white;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+/* Avatar des médecins */
+ion-avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+
+.map-section {
+  padding: 10px;
+  .map-container {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ion-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  }
+}
+
+
+.scrollable-content {
+  --overflow: auto;
+  --max-height: 400px; 
+}
+
+
+
+.search-container {
+  margin-left: 5px;
+  display: flex;
+  gap: 10px; /* Espace entre la barre de recherche et le dropdown */
+  margin-bottom: 20px; /* Espace en dessous du conteneur */
+}
+
+#doctorSearch {
+  padding: 10px;
+  width: 200px; /* Ajustez la largeur selon vos besoins */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#specialtyDropdown {
+  padding: 10px; /* Ajoutez un peu de rembourrage pour un meilleur rendu */
+  border: 1px solid #ccc; /* Bordure légère */
+  border-radius: 20px; /* Bord arrondi */
+  background-color: white; /* Fond blanc */
+  appearance: none; /* Supprime le style par défaut du navigateur */
+  -webkit-appearance: none; /* Pour les navigateurs WebKit (Safari, Chrome) */
+  -moz-appearance: none; /* Pour Firefox */
+  cursor: pointer; /* Change le curseur en pointeur */
+  outline: none; /* Supprime la bordure de focus */
+}
+
+
+
+
+.search-container {
+    display: flex; /* Utilise Flexbox pour aligner les éléments */
+    align-items: center; /* Centre verticalement les éléments */
+    gap: 10px; /* Espace entre le menu déroulant et la barre de recherche */
+}
+
+#specialtyDropdown {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Bords arrondis */
+    background-color: white;
+    appearance: none; /* Supprime le style par défaut du navigateur */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    outline: none;
+}
+
+#searchInput {
+   width: 27%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Bords arrondis pour la barre de recherche */
+    flex: 1; /* Permet à la barre de recherche de prendre l'espace disponible */
+    outline: none; /* Supprime la bordure de focus */
+}
+
+#searchInput::placeholder {
+    color: #999; /* Couleur du texte du placeholder */
 }
