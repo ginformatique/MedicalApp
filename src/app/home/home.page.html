@@ -41,40 +41,20 @@
       <ion-label>Médecins disponibles</ion-label>
     </ion-list-header>
 
-    <ion-item detail="true" routerLink="/doctors">
+    <ion-item *ngFor="let medecin of medecins">
       <ion-avatar slot="start">
-        <img src="assets/doctor1.webp" alt="Dr. Martin">
+        <img [src]="medecin.image" [alt]="medecin.nom">
       </ion-avatar>
       <ion-label>
-        <h2>Dr. Martin</h2>
-        <p>Médecin Généraliste</p>
-        <p>Disponible aujourd'hui</p>
+        <h2>{{ medecin.nom }}</h2>
+        <p>{{ medecin.specialite }}</p>
+        <p>{{ medecin.disponibilite }}</p>
       </ion-label>
-      <ion-badge slot="end" color="success">En ligne</ion-badge>
-    </ion-item>
-    <ion-item detail="true" routerLink="/doctors">
-      <ion-avatar slot="start">
-        <img src="assets/doctor2.jpg" alt="Dr. Bernard">
-      </ion-avatar>
-      <ion-label>
-        <h2>Dr. Bernard</h2>
-        <p>Pédiatre</p>
-        <p>Disponible demain</p>
-      </ion-label>
-      <ion-badge slot="end" color="warning">Occupé</ion-badge>
-    </ion-item>
-
-    <ion-item detail="true" routerLink="/doctors">
-      <ion-avatar slot="start">
-        <img src="assets/doctor2.jpg" alt="Dr. Bernard">
-      </ion-avatar>
-      <ion-label>
-        <h2>Dr. Bernard</h2>
-        <p>Pédiatre</p>
-        <p>Disponible demain</p>
-      </ion-label>
-      <ion-badge slot="end" color="warning">Occupé</ion-badge>
+      <ion-badge slot="end" [color]="medecin.statut === 'En ligne' ? 'success' : 'warning'">
+        {{ medecin.statut }}
+      </ion-badge>
     </ion-item>
   </ion-list>
 </ion-content>
+
 </ion-content>

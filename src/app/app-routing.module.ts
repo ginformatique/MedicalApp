@@ -23,11 +23,6 @@ const routes: Routes = [
     path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   },
-  
-  {
-    path: 'doctors',
-    loadChildren: () => import('./doctors/doctors.module').then( m => m.DoctorsPageModule)
-  },
   {
     path: 'categories',
     loadChildren: () => import('./categories/categories.module').then( m => m.CategoriesPageModule)
@@ -43,6 +38,10 @@ const routes: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'doctors',
+    loadChildren: () => import('./doctors/doctors.module').then( m => m.DoctorsPageModule)
   },
 
  
