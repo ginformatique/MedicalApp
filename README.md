@@ -26,7 +26,9 @@ python app.py
 Démarre MongoDB 
 
 crée une base de données nommée: medical_db
+
 table medecins:
+
 Script:
 {
     "nom": "Dr. Marie Curie",
