@@ -1,43 +1,41 @@
+<ion-content class="ion-padding">
+  <div class="register-container">
+    <form class="register-form">
+      <ion-item>
+        <ion-label position="floating">Nom</ion-label>
+        <ion-input type="text" [(ngModel)]="nom" name="nom"></ion-input>
+      </ion-item>
 
-  <ion-content class="ion-padding">
-    <div class="register-container">
-      <form class="register-form">
-        <ion-item>
-          <ion-label position="floating">Nom</ion-label>
-          <ion-input type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="floating">Prénom</ion-label>
-          <ion-input type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="floating">Email</ion-label>
-          <ion-input type="email"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="floating">Mot de passe</ion-label>
-          <ion-input type="password"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="floating">Confirmer le mot de passe</ion-label>
-          <ion-input type="password"></ion-input>
-        </ion-item>
-  
-        <ion-button expand="block" class="register-button">
-          S'inscrire
+      <ion-item>
+        <ion-label position="floating">Prénom</ion-label>
+        <ion-input type="text" [(ngModel)]="prenom" name="prenom"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" [(ngModel)]="email" name="email"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Mot de passe</ion-label>
+        <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Confirmer le mot de passe</ion-label>
+        <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" class="register-button" (click)="register()">
+        S'inscrire
+      </ion-button>
+
+      <div class="login-link">
+        <p>Déjà inscrit ?</p>
+        <ion-button fill="clear" routerLink="/login">
+          Se connecter
         </ion-button>
-  
-        <div class="login-link">
-          <p>Déjà inscrit ?</p>
-          <ion-button fill="clear">
-            Se connecter
-          </ion-button>
-        </div>
-      </form>
-    </div>
-  </ion-content>
-  
+      </div>
+    </form>
+  </div>
+</ion-content>

@@ -1,36 +1,108 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-title>Profil du Docteur</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content class="ion-padding">
-    <!-- Section Image et Informations du Docteur -->
-    <div class="doctor-info">
-      <img src="assets/doctor1.webp" alt="Doctor Image" class="doctor-image" />
-      <h2>Dr. John Doe</h2>
-      <p>Cardiologue</p>
-      <p>123 Rue de la Santé, Paris, France</p>
+  <ion-toolbar color="primary">
+    <ion-title>Profil du Médecin</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <!-- Image et informations du médecin -->
+    <div class="doctor-profile">
+      <img src="assets/doctor1.webp" alt="Photo du médecin" class="doctor-img" />
+      <div class="doctor-info">
+        <h2>Dr. Martin Dupont</h2>
+        <p>Spécialité: Cardiologue</p>
+        <p>
+          <ion-icon name="star" color="warning"></ion-icon>
+          <ion-icon name="star" color="warning"></ion-icon>
+          <ion-icon name="star" color="warning"></ion-icon>
+          <ion-icon name="star" color="warning"></ion-icon>
+          <ion-icon name="star-half" color="warning"></ion-icon>
+          4.5/5 (42 avis)
+        </p>
+      </div>
     </div>
-  
-    <!-- Section Disponibilité -->
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Disponibilité</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Lundi - Vendredi : 9h00 - 17h00</p>
-        <p>Samedi : 9h00 - 12h00</p>
-      </ion-card-content>
-    </ion-card>
-  
-    <!-- Section Localisation -->
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Localisation</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>123 Rue de la Santé, Paris, France</p>
-      </ion-card-content>
-    </ion-card>
-  </ion-content>
+
+    <!-- Système d'onglets simple -->
+    <ion-segment [(ngModel)]="selectedTab" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="info">
+        <ion-label>Informations</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="schedule">
+        <ion-label>Disponibilités</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="location">
+        <ion-label>Localisation</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content">
+      <!-- Informations -->
+      <div *ngIf="selectedTab === 'info'">
+        <h3>À propos</h3>
+        <p>
+          Dr. Martin Dupont est cardiologue avec 15 ans d'expérience. Diplômé de la faculté de médecine de Lyon, il est
+          spécialisé dans le diagnostic et le traitement des maladies cardiovasculaires.
+        </p>
+        <h3>Contact</h3>
+        <ion-item lines="none">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-label>+33 1 23 45 67 89</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input type="email" value="dr.dupont@gmail.fr" readonly></ion-input>
+        </ion-item>
+      </div>
+
+      <!-- Disponibilités -->
+      <div *ngIf="selectedTab === 'schedule'">
+        <h3>Choisir une date</h3>
+        <!-- Sélecteur de date natif -->
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          (change)="onDateSelected($event)"
+          [min]="getTodayDate()"
+          [max]="getMaxDate()"
+        />
+
+        <div *ngIf="selectedDate && availableSlots.length > 0" class="time-slots">
+          <h3>Créneaux disponibles pour le {{ selectedDate | date: 'dd/MM/yyyy' }}</h3>
+          <div class="slots-grid">
+            <ion-button
+              *ngFor="let slot of availableSlots"
+              [color]="slot.available ? 'success' : 'medium'"
+              [disabled]="!slot.available"
+              (click)="bookAppointment(slot)"
+            >
+              {{ slot.time }}
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- Message affiché si aucun créneau n'est disponible -->
+        <div *ngIf="selectedDate && availableSlots.length === 0" class="no-slots">
+          <p>Aucun créneau disponible pour cette date.</p>
+        </div>
+      </div>
+
+      <!-- Carte de localisation -->
+      <div *ngIf="selectedTab === 'location'">
+        <h3>Adresse du cabinet</h3>
+        <p>
+          <ion-icon name="location-outline"></ion-icon>
+          12 rue de la Médecine, 75008 Paris
+        </p>
+
+        <div class="map-container">
+          <div #map style="height: 400px; width: 100%;"></div>
+        </div>
+      </div>
+    </div>
+  </ion-card>
+</ion-content>

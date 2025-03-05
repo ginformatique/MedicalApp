@@ -76,7 +76,6 @@ ion-content {
   
 }
 
-/* Liste des médecins */
 ion-list {
   background: white;
   margin-top: 10px;
@@ -173,4 +172,30 @@ ion-avatar img {
 
 #searchInput::placeholder {
     color: #999; /* Couleur du texte du placeholder */
+}
+
+
+.loading-more, .no-more-data {
+  text-align: center;
+  padding: 20px;
+  ion-spinner {
+    width: 30px;
+    height: 30px;
+  }
+  p {
+    margin-top: 10px;
+    color: #666;
+  }
+}*
+ion-spinner {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+ion-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }

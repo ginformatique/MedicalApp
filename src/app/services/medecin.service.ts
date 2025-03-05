@@ -6,11 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MedecinService {
-  private apiUrl = 'http://localhost:5000/api/medecins';
+  private apiUrl = 'http://localhost:5000/api/medecins'; // URL de votre API
 
   constructor(private http: HttpClient) { }
 
-  getMedecins(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // Ajoutez un paramètre `page` pour la pagination
+  getMedecins(page: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?page=${page}`);
+  }
+
+   // Méthode pour récupérer les détails d'un médecin par son ID
+   getMedecinById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 }

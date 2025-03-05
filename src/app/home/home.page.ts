@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
-import { MedecinService } from '../services/medecin.service'; // Import MedecinService
+import { MedecinService } from '../services/medecin.service';
+import { InfiniteScrollCustomEvent } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
-  standalone: false,
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss']
+  styleUrls: ['home.page.scss'],
+  standalone: false,
 })
 export class HomePage implements OnInit {
+  currentIndex = 0; 
+  totalItems = 3; 
+  medecins: any[] = [];
+  loading = false; 
+  page = 1;
+  itemsPerPage = 4;
+  hasMoreData = true; 
 
-  currentIndex = 0; // Index de l'image actuelle
-  totalItems = 3; // Nombre total d'images
-  medecins: any[] = []; // Tableau pour stocker les médecins récupérés
-
-  constructor(private medecinService: MedecinService) {} // Injecter MedecinService
+  constructor(private medecinService: MedecinService) {} 
 
   ngOnInit() {
     // Démarre le carrousel automatique
@@ -28,12 +31,22 @@ export class HomePage implements OnInit {
 
   // Récupère les médecins depuis le backend
   loadMedecins() {
-    this.medecinService.getMedecins().subscribe(
+    if (!this.hasMoreData || this.loading) return; // Ne pas charger si plus de données ou déjà en cours de chargement
+
+    this.loading = true; // Active l'indicateur de chargement
+    this.medecinService.getMedecins(this.page).subscribe(
       (data) => {
-        this.medecins = data; // Stocke les médecins récupérés
+        if (data.length === 0) {
+          this.hasMoreData = false; // Plus de médecins à charger
+        } else {
+          this.medecins = [...this.medecins, ...data]; // Ajoute les nouveaux médecins à la liste existante
+          this.page++; // Incrémente la page pour la prochaine requête
+        }
+        this.loading = false; // Désactive l'indicateur de chargement
       },
       (error) => {
         console.error('Erreur lors de la récupération des médecins', error);
+        this.loading = false; // Désactive l'indicateur de chargement en cas d'erreur
       }
     );
   }
@@ -57,5 +70,19 @@ export class HomePage implements OnInit {
       const offset = -this.currentIndex * 100; // Décalage en pourcentage
       carouselInner.style.transform = `translateX(${offset}%)`;
     }
+  }
+
+  // Méthode pour charger plus de médecins lors du défilement
+  loadMore(event: InfiniteScrollCustomEvent) {
+    // Vérifie si l'utilisateur a atteint le 4ème médecin
+    if (this.medecins.length >= 4 && this.hasMoreData) {
+      this.loadMedecins(); // Charge plus de médecins
+    }
+    setTimeout(() => {
+      (event as InfiniteScrollCustomEvent).target.complete();
+      if (!this.hasMoreData) {
+        (event as InfiniteScrollCustomEvent).target.disabled = true;
+      }
+    }, 1000); 
   }
 }

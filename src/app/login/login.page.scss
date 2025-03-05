@@ -1,73 +1,31 @@
-/* Couleurs principales */
-:root {
-  --ion-color-primary: #4285F4;
-  --ion-color-primary-rgb: 66, 133, 244;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3a75d7;
-  --ion-color-primary-tint: #5591f5;
-  
-  /* Dégradé de bleu pour formulaire */
-  --ion-color-light-blue: #E8F0FE;
-  --ion-color-medium-blue: #BBDEFB;
-}
-
-/* Style du contenu */
 ion-content {
-  
-  --background: var(--ion-color-light-blue);
-  --padding-top: 20px;
-  --padding-bottom: 20px;
-  --padding-start: 16px;
-  --padding-end: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
 }
 
-/* Style des items du formulaire */
 ion-item {
-  --background: #ffffff;
-  --border-radius: 8px;
-  --border-color: var(--ion-color-medium-blue);
-  --border-width: 1px;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --inner-padding-end: 8px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  --highlight-color: var(--ion-color-primary);
 }
 
-/* Style du label flottant */
-ion-label {
-  --color: var(--ion-color-primary);
-  font-weight: 500;
-}
-
-/* Style de l'input */
-ion-input {
-  --color: #333333;
-  --placeholder-color: #999999;
-}
-
-/* Style du bouton */
 ion-button {
-  --background: var(--ion-color-primary);
-  --background-hover: var(--ion-color-primary-shade);
-  --border-radius: 8px;
-  --box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
-  margin-top: 24px;
-  height: 48px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-top: 20px;
 }
 
-/* Focus states */
-ion-item.item-has-focus {
-  --border-color: var(--ion-color-primary);
-  --background: #F7FAFF;
-}
+.login-link {
+  text-align: center;
+  margin-top: 20px;
 
-/* Animation pour bouton */
-ion-button:hover {
-  transform: translateY(-2px);
-  transition: transform 0.3s ease;
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
+
+  ion-button {
+    --padding-start: 0;
+    --padding-end: 0;
+  }
 }
