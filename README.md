@@ -15,13 +15,16 @@ Postman(pour tester l'application)
 git clone https://github.com/ginformatique/MedicalApp.git
 cd medical-app-backend
 
-2) Installation des dépendances
+2)Installation des dépendances
+
 pip install flask flask-pymongo flask-cors bcrypt
 
 3)Lancer le serveur Flask
+
 python app.py
 
 Démarre MongoDB 
+
 crée une base de données nommée: medical_db
 table medecins:
 Script:
