@@ -1,6 +1,4 @@
-👨‍💻 Équipe
- - Guesmi Yosra
- - Mezzi Eya
+👨‍💻 Équipe  -Guesmi Yosra,Mezzi Eya
 
 Backend développée avec Flask et MongoDB.
 
