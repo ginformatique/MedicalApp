@@ -1,3 +1,7 @@
+👨‍💻 Équipe
+ - Guesmi Yosra
+ - Mezzi Eya
+
 Backend développée avec Flask et MongoDB.
 
 📌 Prérequis
@@ -89,9 +93,5 @@ Script
     "email": "jean.dupont@example.com",
     "password": "secure123"
   }
-
-👨‍💻 Équipe
- - Guesmi Yosra
- - Mezzi Eya
 
 
