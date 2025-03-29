@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 @Component({
   selector: 'app-login',
@@ -11,53 +12,73 @@ import { AlertController } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
   email: string = '';
-  password: string = ''; 
+  password: string = '';
 
   constructor(
     private authService: AuthService,
-    private router: Router, // Service de routage
-    private alertController: AlertController // Service pour afficher des alertes
+    private router: Router,
+    private alertController: AlertController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Initialize Google Auth
+    GoogleAuth.initialize({
+      clientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+      scopes: ['profile', 'email'],
+      grantOfflineAccess: true
+    });
+  }
 
-  // Méthode pour gérer la connexion
+  // Standard email/password login
   async login() {
-    // Vérifie que l'email et le mot de passe ne sont pas vides
     if (!this.email || !this.password) {
       this.showAlert('Erreur', 'Veuillez remplir tous les champs.');
       return;
     }
 
-    // Appelle le service d'authentification pour se connecter
     this.authService.login(this.email, this.password).subscribe(
       (response) => {
         console.log('Login successful', response);
-
-        // Redirige vers la page profile après une connexion réussie
         this.router.navigate(['/profile']);
-
-        // Affiche un message de succès
         this.showAlert('Succès', 'Connexion réussie !');
-          // Redirige vers la page profile après une connexion réussie
-          this.router.navigate(['/profile']);
       },
       (error) => {
         console.error('Login failed', error);
-
-        // Affiche un message d'erreur
         this.showAlert('Erreur', 'Échec de la connexion. Vérifiez vos identifiants.');
       }
     );
   }
 
-  // Méthode pour afficher une alerte
+  // Google Sign-In method
+  async googleSignIn() {
+    try {
+      const googleUser = await GoogleAuth.signIn();
+      
+      // Send the Google token to your backend for verification
+      this.authService.googleLogin(googleUser.authentication.idToken).subscribe(
+        (response: any) => {
+          console.log('Google Login successful', response);
+          this.router.navigate(['/profile']);
+          this.showAlert('Succès', 'Connexion Google réussie !');
+        },
+        (error: any) => {
+          console.error('Google Login failed', error);
+          this.showAlert('Erreur', 'Échec de la connexion Google.');
+        }
+      );
+    } catch (error) {
+      console.error('Google Sign-In error', error);
+      this.showAlert('Erreur', 'Problème de connexion Google.');
+    }
+  }
+
+  // Method to show alerts
   async showAlert(header: string, message: string) {
     const alert = await this.alertController.create({
-      header, // Titre de l'alerte
-      message, // Message de l'alerte
-      buttons: ['OK'] // Bouton pour fermer l'alerte
+      header,
+      message,
+      buttons: ['OK']
     });
-    await alert.present(); // Affiche l'alerte
+    await alert.present();
   }
 }

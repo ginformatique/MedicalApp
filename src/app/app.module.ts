@@ -5,10 +5,11 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomePageModule } from './home/home.module';
-import { HttpClientModule } from '@angular/common/http'; 
+import { HttpClientModule } from '@angular/common/http';
 import { LoginPageModule } from './login/login.module'; 
 import { CalendarModule } from 'ion2-calendar';
 import {  CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import {  CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     HttpClientModule,
     HomePageModule,   
     LoginPageModule,
+  
     
   ],
   providers: [

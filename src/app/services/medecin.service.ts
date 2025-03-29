@@ -19,4 +19,8 @@ export class MedecinService {
    getMedecinById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
+  getDocuments() {
+    const user = JSON.parse(localStorage.getItem('currentUser')!);
+    return this.http.get(`${this.apiUrl}/documents?userId=${user.id}`);
+  }
 }

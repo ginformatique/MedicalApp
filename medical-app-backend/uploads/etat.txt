@@ -1,0 +1,50 @@
+1;Alabama
+2;Alaska
+3;Arizona
+4;Arkansas
+6;California
+7;Colorado
+8;Connecticut
+9;Delaware
+10;Florida
+11;Georgia
+12;Hawaii
+13;Idaho
+14;Illinois
+615;Indiana
+Iowa
+Kansas
+Kentucky
+Louisiana
+Maine
+Maryland
+Massachusetts
+Michigan
+Minnesota
+Mississippi
+Missouri
+Montana
+Nebraska
+Nevada
+New Hampshire
+New Jersey
+New Mexico
+New York
+North Carolina
+North Dakota
+Ohio
+Oklahoma
+Oregon
+Pennsylvania
+Rhode Island
+South Carolina
+South Dakota
+Tennessee
+Texas
+Utah
+Vermont
+Virginia
+Washington
+West Virginia
+Wisconsin
+Wyoming

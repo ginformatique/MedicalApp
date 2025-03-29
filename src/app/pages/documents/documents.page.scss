@@ -1,0 +1,104 @@
+/* documents.page.scss */
+.bg-light {
+  --background: #f4f5f8;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.upload-card {
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+
+  ion-card-header {
+    padding-bottom: 10px;
+  }
+
+  .upload-icon {
+    font-size: 3rem;
+    color: var(--ion-color-primary);
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-upload-container {
+  .file-select-button {
+    --border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .selected-file-info {
+    color: var(--ion-color-medium);
+    font-size: 0.9em;
+    text-align: center;
+
+    .file-size {
+      color: var(--ion-color-medium-shade);
+    }
+  }
+}
+
+.submit-button {
+  --border-radius: 8px;
+  margin-top: 10px;
+}
+
+.documents-list {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+
+  ion-list-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ion-color-light);
+  }
+
+  ion-item {
+    --padding-start: 15px;
+    --inner-padding-end: 15px;
+    margin-bottom: 5px;
+
+    ion-icon {
+      color: var(--ion-color-primary);
+      margin-right: 15px;
+    }
+
+    ion-label {
+      h2 {
+        font-weight: bold;
+      }
+
+      p {
+        color: var(--ion-color-medium);
+        font-size: 0.8em;
+      }
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  .upload-card, 
+  .documents-list {
+    margin: 10px;
+    border-radius: 8px;
+  }
+}

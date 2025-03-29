@@ -1,0 +1,77 @@
+<!-- documents.page.html -->
+<ion-content class="bg-light">
+  <div class="container">
+    <!-- Upload Card -->
+    <ion-card class="upload-card">
+      <ion-card-header>
+        <ion-card-title class="text-center">
+          <ion-icon name="cloud-upload" class="upload-icon"></ion-icon>
+          Envoyer un document médical
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="file-upload-container">
+          <input 
+            type="file" 
+            #fileInput 
+            (change)="uploadFile($event)" 
+            class="hidden-file-input"
+            accept=".pdf,.doc,.docx,.jpg,.png"
+          />
+          
+          <ion-button 
+            expand="full" 
+            fill="outline" 
+            class="file-select-button"
+            (click)="fileInput.click()"
+          >
+            <ion-icon name="attach" slot="start"></ion-icon>
+            Sélectionner un fichier
+          </ion-button>
+          
+          <p *ngIf="selectedFile" class="selected-file-info">
+            {{ selectedFile.name }} 
+            <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+          </p>
+        </div>
+        
+        <ion-button 
+          expand="full" 
+          color="primary" 
+          class="submit-button"
+          (click)="submitDocument()"
+          [disabled]="!selectedFile"
+        >
+          <ion-icon name="cloud-upload" slot="start"></ion-icon>
+          Envoyer le document
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Documents List -->
+    <ion-list class="documents-list">
+      <ion-list-header>
+        <ion-label>Mes documents</ion-label>
+      </ion-list-header>
+      
+      <ion-item-sliding *ngFor="let doc of documents" #slidingItem>
+        <ion-item *ngIf="!doc.hidden && doc.visible !== false">
+          <ion-icon name="document" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ doc.nom }}</h2>
+            <p>{{ doc.uploadDate ? formatDate(doc.uploadDate) : 'Non daté' }}</p>
+            
+          </ion-label>
+          <ion-badge slot="end" [color]="doc.status === 'consulté' ? 'success' : 'warning'">
+            {{ doc.status === 'consulté' ? 'Consulté' : 'En attente' }}
+          </ion-badge>
+        </ion-item>
+      
+        
+      </ion-item-sliding>
+      
+      
+    </ion-list>
+  </div>
+</ion-content>

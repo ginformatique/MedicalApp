@@ -1,20 +1,60 @@
-<ion-content>
-  <ion-item style="margin-top: 100px;">
-    <ion-label position="floating">Email</ion-label>
-    <ion-input type="email" [(ngModel)]="email"></ion-input>
-  </ion-item>
+<ion-content class="login-container">
+  <div class="login-card">
+    <div class="logo-container">
+   
+      <img src="assets/logo.png" alt="Medical App Logo" class="logo">
+    </div>
 
-  <ion-item>
-    <ion-label position="floating">Password</ion-label>
-    <ion-input type="password" [(ngModel)]="password"></ion-input>
-  </ion-item>
+    <h1>Connexion</h1>
 
-  <ion-button expand="full" (click)="login()">Login</ion-button>
+    <ion-item class="ion-margin-bottom">
+      <ion-label position="floating">Email</ion-label>
+      <ion-input 
+        type="email" 
+        [(ngModel)]="email" 
+        class="custom-input"
+      ></ion-input>
+    </ion-item>
 
-  <div class="login-link">
-    <p>Pas encore inscrit ?</p>
-    <ion-button fill="clear" routerLink="/register">
-      S'inscrire
+    <ion-item class="ion-margin-bottom">
+      <ion-label position="floating">Mot de passe</ion-label>
+      <ion-input 
+        type="password" 
+        [(ngModel)]="password" 
+        class="custom-input"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button 
+      expand="full" 
+      (click)="login()" 
+      class="login-button"
+    >
+      Se connecter
     </ion-button>
+
+    <div class="divider">
+      <span>ou</span>
+    </div>
+
+    <ion-button 
+      expand="full" 
+      (click)="googleSignIn()" 
+      class="google-login-button"
+    >
+      <ion-icon name="logo-google" slot="start"></ion-icon>
+      Continuer avec Google
+    </ion-button>
+
+    <div class="register-link">
+      <p>Pas encore inscrit ?</p>
+      <ion-button 
+        fill="clear" 
+        routerLink="/register" 
+        class="register-button"
+      >
+        S'inscrire
+      </ion-button>
+    </div>
   </div>
 </ion-content>

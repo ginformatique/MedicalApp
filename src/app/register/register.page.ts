@@ -7,7 +7,7 @@ import { AlertController } from '@ionic/angular';
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
-  standalone :  false  
+  standalone: false
 })
 export class RegisterPage {
   nom: string = '';
@@ -22,19 +22,44 @@ export class RegisterPage {
     private alertController: AlertController
   ) {}
 
-  async register() {
-    // Validate form inputs
+  // Comprehensive form validation
+  validateForm(): boolean {
+    // Check for empty fields
     if (!this.nom || !this.prenom || !this.email || !this.password || !this.confirmPassword) {
       this.showAlert('Erreur', 'Veuillez remplir tous les champs.');
-      return;
+      return false;
     }
 
+    // Password match validation
     if (this.password !== this.confirmPassword) {
       this.showAlert('Erreur', 'Les mots de passe ne correspondent pas.');
+      return false;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.showAlert('Erreur', 'Veuillez entrer une adresse email valide.');
+      return false;
+    }
+
+    // Password strength validation
+    if (this.password.length < 8) {
+      this.showAlert('Erreur', 'Le mot de passe doit contenir au moins 8 caractères.');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Registration method
+  register() {
+    // Validate form before submission
+    if (!this.validateForm()) {
       return;
     }
 
-    // Prepare the registration data
+    // Prepare registration data
     const userData = {
       nom: this.nom,
       prenom: this.prenom,
@@ -42,16 +67,22 @@ export class RegisterPage {
       password: this.password,
     };
 
-    // Send the registration request to the backend
+    // Send registration request
     this.http.post('http://127.0.0.1:5000/register', userData).subscribe(
       (response: any) => {
         console.log('Registration successful:', response);
         this.showAlert('Succès', 'Inscription réussie !');
-        this.router.navigate(['/login']); // Redirect to the login page
+        this.router.navigate(['/login']); // Redirect to login page
       },
       (error) => {
         console.error('Registration failed:', error);
-        this.showAlert('Erreur', "Échec de l'inscription. Veuillez réessayer.");
+        
+        // Handle specific error scenarios
+        const errorMessage = error.error?.message || 
+          (error.status === 409 ? 'Un compte avec cet email existe déjà.' : 
+          "Échec de l'inscription. Veuillez réessayer.");
+        
+        this.showAlert('Erreur', errorMessage);
       }
     );
   }
