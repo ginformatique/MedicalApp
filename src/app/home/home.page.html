@@ -1,3 +1,4 @@
+<!-- home.page.html -->
 <ion-content>
   <div class="ad-section">
     <div class="carousel">
@@ -16,52 +17,36 @@
     <button class="carousel-control prev" (click)="prevSlide()">&#10094;</button>
     <button class="carousel-control next" (click)="nextSlide()">&#10095;</button>
   </div>
-
   <div class="search-section">
-    <ion-searchbar class="rounded-searchbar" placeholder="Rechercher un Médecin..." animated></ion-searchbar>
+    <ion-searchbar 
+      class="rounded-searchbar" 
+      placeholder="Rechercher un Médecin..." 
+      animated
+      (ionInput)="searchMedecins($event)"
+      (ionClear)="searchMedecins()">
+    </ion-searchbar>
   </div>  
-
-  <div class="search-container">
-    <select id="specialtyDropdown">
-        <option value="">Toutes les spécialités</option>
-        <option value="generaliste">Médecin Généraliste</option>
-        <option value="pediatre">Pédiatre</option>
-        <option value="cardiologue">Cardiologue</option>
-    </select>
-    <input type="text" id="searchInput" placeholder="Rechercher zone...">
-  </div>
-
+  
   <ion-list>
     <ion-list-header>
-      <ion-label>Médecins disponibles</ion-label>
+      <ion-label style="color:#605eea">Médecins disponibles</ion-label>
     </ion-list-header>
-
-    <ion-item *ngFor="let medecin of medecins" [routerLink]="['/doctors', medecin.id]">
+  
+    <ion-item *ngFor="let medecin of medecins" (click)="goToDoctorProfile(medecin._id)">
       <ion-avatar slot="start">
-        <img [src]="medecin.image" [alt]="medecin.nom">
+        <img [src]="medecin.image || 'assets/default-doctor.png'" [alt]="medecin.nom">
       </ion-avatar>
       <ion-label>
         <h2>{{ medecin.nom }}</h2>
         <p>{{ medecin.specialite }}</p>
-        <p>{{ medecin.disponibilite }}</p>
       </ion-label>
-      <ion-badge slot="end" [color]="medecin.statut === 'En ligne' ? 'success' : 'warning'">
-        {{ medecin.statut }}
-      </ion-badge>
     </ion-item>
-
-    <!-- Indicateur de chargement -->
     <ion-item *ngIf="loading">
       <ion-spinner name="crescent"></ion-spinner>
       <ion-label>Chargement...</ion-label>
     </ion-item>
+    <ion-item *ngIf="!loading && medecins.length === 0">
+      <ion-label>Aucun médecin trouvé</ion-label>
+    </ion-item>
   </ion-list>
-
-  <!-- Infinite Scroll pour charger plus de médecins -->
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMoreData">
-    <ion-infinite-scroll-content
-      loadingSpinner="bubbles"
-      loadingText="Chargement des médecins..."
-    ></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 </ion-content>

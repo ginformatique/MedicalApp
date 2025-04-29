@@ -1,0 +1,174 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Profil Patient</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleNotifications()">
+        <ion-icon name="notifications"></ion-icon>
+        <ion-badge *ngIf="unreadNotifications > 0" color="warning">
+          {{ unreadNotifications }}
+        </ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="profile-container" *ngIf="patient">
+    <ion-avatar class="profile-image">
+      <img [src]="patient.photo || 'assets/patient.jpg'" alt="Patient Photo">
+    </ion-avatar>
+    <h2 class="profile-name">{{ patient.nom }} {{ patient.prenom }}</h2>
+    <p class="profile-detail">Né(e) le {{ formatDate(patient.dateNaissance) }}</p>
+  </div>
+
+  <!-- Contact Information -->
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+        Contact
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>{{ patient?.telephone || 'Non renseigné' }}</ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-icon name="mail-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>{{ patient?.email || 'Non renseigné' }}</ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-icon name="home-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>{{ patient?.adresse || 'Non renseigné' }}</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Medical Information -->
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="medkit-outline" slot="start"></ion-icon>
+        Informations Médicales
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label>
+          <h3>Groupe Sanguin</h3>
+          <p>{{ patient?.groupeSanguin || 'Non renseigné' }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>
+          <h3>Antécédents Médicaux</h3>
+          <p class="multi-line">{{ patient?.antecedentsMedicaux || 'Aucun antécédent' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Appointments Section -->
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        Mes Rendez-vous
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <!-- Rendez-vous à venir -->
+        <ion-item-group *ngIf="upcomingAppointments.length > 0">
+          <ion-item-divider sticky>
+            <ion-label color="primary">À venir</ion-label>
+          </ion-item-divider>
+          <ion-item *ngFor="let appointment of upcomingAppointments" lines="none" class="appointment-item">
+            <ion-icon name="time-outline" slot="start" color="primary"></ion-icon>
+            <ion-label>
+              <h3>{{ formatDate(appointment.date) }} à {{ formatTime(appointment.time) }}</h3>
+              <p>Avec Dr. {{ appointment.doctorName }}</p>
+              <p [class]="'status-' + appointment.status?.toLowerCase()">
+                Statut: {{ appointment.status | titlecase }}
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-item-group>
+
+        <!-- Rendez-vous passés -->
+        <ion-item-group *ngIf="pastAppointments.length > 0">
+          <ion-item-divider sticky>
+            <ion-label>Historique</ion-label>
+          </ion-item-divider>
+          <ion-item *ngFor="let appointment of pastAppointments" lines="none" class="appointment-item past">
+            <ion-icon name="time-outline" slot="start" color="medium"></ion-icon>
+            <ion-label>
+              <h3>{{ formatDate(appointment.date) }} à {{ formatTime(appointment.time) }}</h3>
+              <p>Avec Dr. {{ appointment.doctorName }}</p>
+              <p [class]="'status-' + appointment.status?.toLowerCase()">
+                Statut: {{ appointment.status | titlecase }}
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-item-group>
+
+        <!-- Aucun rendez-vous -->
+        <ion-item *ngIf="appointments.length === 0" lines="none">
+          <ion-label class="ion-text-center">
+            <ion-icon name="calendar-clear-outline" size="large"></ion-icon>
+            <p>Aucun rendez-vous programmé</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Notifications Section -->
+  <ion-card class="info-card" *ngIf="showNotifications">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="notifications-outline" slot="start"></ion-icon>
+        Notifications
+      </ion-card-title>
+      <ion-button slot="end" fill="clear" (click)="markAllAsRead()" *ngIf="unreadNotifications > 0">
+        <ion-icon name="checkmark-done-all" slot="start"></ion-icon>
+        Tout marquer comme lu
+      </ion-button>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let notification of notifications" lines="none" 
+                 [class.unread]="!notification.isRead" class="notification-item">
+          <ion-icon [name]="notification.isRead ? 'notifications-off-outline' : 'notifications-outline'" 
+                   slot="start" [color]="notification.isRead ? 'medium' : 'primary'"></ion-icon>
+          <ion-label>
+            <h3>{{ notification.message }}</h3>
+            <p>{{ formatDateTime(notification.createdAt) }}</p>
+          </ion-label>
+          <ion-button slot="end" fill="clear" (click)="markNotificationAsRead(notification.id)" 
+                     *ngIf="!notification.isRead">
+            <ion-icon name="checkmark-done" color="success"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item *ngIf="notifications.length === 0" lines="none">
+          <ion-label class="ion-text-center">
+            <ion-icon name="notifications-off-outline" size="large"></ion-icon>
+            <p>Aucune notification</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

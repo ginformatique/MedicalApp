@@ -1,201 +1,238 @@
-ion-content {
+// Variables globales
+$primary-color: #6665DD;
+$background-color: #f7f9fc;
+$text-color: #333333;
+$light-gray: #f0f0f0;
+$border-radius: 10px;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
-  --background: #f4f4f4;
+// Style général
+ion-content {
+  --background: #{$background-color};
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
 }
 
-
+// Section Carousel - correctifs pour les images
 .ad-section {
-  margin-top: 50px;
   position: relative;
-  width: 100%;
+  margin-bottom: 20px;
+  margin-top: 66px;
+  height: 200px;
+  border-radius: $border-radius;
   overflow: hidden;
-  //margin-bottom: 7px;
-
+  box-shadow: $box-shadow;
+  
   .carousel {
     width: 100%;
-    position: relative;
+    height: 100%;
+    
+    .carousel-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      
+      .carousel-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        
+        &:first-child {
+          opacity: 1; // Afficher la première image par défaut
+        }
+        
+        &.active {
+          opacity: 1;
+        }
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block; // Forcer l'affichage en block
+          max-width: 100%; // S'assurer que l'image ne déborde pas
+          background-color: #e0e0e0; // Couleur de fond en attendant le chargement
+        }
+      }
+    }
   }
-
-  .carousel-inner {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-  }
-
-  .carousel-item {
-    min-width: 100%;
-    box-sizing: border-box;
-  }
-
-  img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-  }
-
+  
   .carousel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    background: rgba(255, 255, 255, 0.7);
     border: none;
-    padding: 10px;
-    cursor: pointer;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    font-size: 18px;
-  }
-
-  .prev {
-    left: 10px;
-  }
-
-  .next {
-    right: 10px;
-  }
-}
-/* Carrousel publicitaire */
-.ad-carousel {
-  height: 200px;
-  ion-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-}
-
-.rounded-searchbar {
-  --border-radius: 50px;
-  --padding-start: 16px; 
-  --padding-end: 16px; 
-}
-
-.search-section {
-
-  padding: 10px;
-  
-}
-
-ion-list {
-  background: white;
-  margin-top: 10px;
-  border-radius: 10px;
-}
-
-/* Avatar des médecins */
-ion-avatar img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-
-.map-section {
-  padding: 10px;
-  .map-container {
-    height: 200px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    ion-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
+    justify-content: center;
+    font-size: 18px;
+    color: $primary-color;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    cursor: pointer;
+    
+    &.prev {
+      left: 10px;
+    }
+    
+    &.next {
+      right: 10px;
+    }
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
     }
   }
 }
 
-
-.scrollable-content {
-  --overflow: auto;
-  --max-height: 400px; 
+// Section Recherche
+.search-section {
+  margin-bottom: 15px;
+  
+  .rounded-searchbar {
+    --border-radius: 25px;
+    --background: white;
+    --color: #{$text-color};
+    --placeholder-color: #888;
+    --icon-color: #{$primary-color};
+    --box-shadow: #{$box-shadow};
+    padding: 0;
+    
+    ion-icon {
+      color: $primary-color;
+    }
+  }
 }
 
-
-
+// Container de recherche
 .search-container {
-  margin-left: 5px;
   display: flex;
-  gap: 10px; /* Espace entre la barre de recherche et le dropdown */
-  margin-bottom: 20px; /* Espace en dessous du conteneur */
-}
-
-#doctorSearch {
-  padding: 10px;
-  width: 200px; /* Ajustez la largeur selon vos besoins */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#specialtyDropdown {
-  padding: 10px; /* Ajoutez un peu de rembourrage pour un meilleur rendu */
-  border: 1px solid #ccc; /* Bordure légère */
-  border-radius: 20px; /* Bord arrondi */
-  background-color: white; /* Fond blanc */
-  appearance: none; /* Supprime le style par défaut du navigateur */
-  -webkit-appearance: none; /* Pour les navigateurs WebKit (Safari, Chrome) */
-  -moz-appearance: none; /* Pour Firefox */
-  cursor: pointer; /* Change le curseur en pointeur */
-  outline: none; /* Supprime la bordure de focus */
-}
-
-
-
-
-.search-container {
-    display: flex; /* Utilise Flexbox pour aligner les éléments */
-    align-items: center; /* Centre verticalement les éléments */
-    gap: 10px; /* Espace entre le menu déroulant et la barre de recherche */
-}
-
-#specialtyDropdown {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px; /* Bords arrondis */
+  gap: 10px;
+  margin-bottom: 20px;
+  
+  select, input {
+    height: 40px;
+    border-radius: 20px;
+    padding: 0 15px;
+    border: 1px solid #e1e5eb;
     background-color: white;
-    appearance: none; /* Supprime le style par défaut du navigateur */
+    font-size: 14px;
+    color: $text-color;
+    outline: none;
+    box-shadow: $box-shadow;
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236665DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 15px;
+  }
+  
+  select {
+    flex: 1;
     cursor: pointer;
-    outline: none;
+  }
+  
+  input {
+    flex: 1.5;
+    
+    &::placeholder {
+      color: #aaa;
+    }
+  }
 }
 
-#searchInput {
-   width: 27%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px; /* Bords arrondis pour la barre de recherche */
-    flex: 1; /* Permet à la barre de recherche de prendre l'espace disponible */
-    outline: none; /* Supprime la bordure de focus */
-}
-
-#searchInput::placeholder {
-    color: #999; /* Couleur du texte du placeholder */
-}
-
-
-.loading-more, .no-more-data {
-  text-align: center;
-  padding: 20px;
+// Liste des médecins - correctifs pour les images des avatars
+ion-list {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 20px;
+  
+  ion-list-header {
+    padding-left: 0;
+    padding-right: 0;
+    
+    ion-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: $text-color;
+      margin: 0 0 10px 0;
+    }
+  }
+  
+  ion-item {
+    --padding-start: 15px;
+    --padding-end: 15px;
+    --inner-padding-end: 10px;
+    --background: white;
+    --border-color: #{$light-gray};
+    margin-bottom: 10px;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    ion-avatar {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+      background-color: #e0e0e0; // Fond en attendant le chargement de l'image
+      overflow: hidden; // S'assurer que les images ne débordent pas
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block; // Forcer l'affichage en block
+      }
+    }
+    
+    ion-label {
+      h2 {
+        font-size: 16px;
+        font-weight: 500;
+        color: $text-color;
+        margin-bottom: 4px;
+      }
+      
+      p {
+        font-size: 14px;
+        color: $primary-color;
+        margin: 0;
+      }
+    }
+    
+    &[button] {
+      cursor: pointer;
+      
+      &:hover {
+        --background: #{lighten($background-color, 2%)};
+      }
+    }
+  }
+  
+  // Style pour le spinner de chargement
   ion-spinner {
-    width: 30px;
-    height: 30px;
+    color: $primary-color;
+    margin-right: 10px;
   }
-  p {
-    margin-top: 10px;
-    color: #666;
-  }
-}*
-ion-spinner {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
 }
 
-ion-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
+// Fix pour éviter que les images ne disparaissent pendant les transitions
+img {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }

@@ -1,0 +1,142 @@
+// Header and toolbar
+.header-gradient {
+  ion-toolbar {
+    --background: #605eea;
+    --color: #ffffff;
+  }
+
+  .close-btn {
+    --color: #ffffff;
+    font-size: 24px;
+  }
+}
+
+ion-content {
+  --background: #f7f9fc;
+
+  .doctor-header {
+    margin-bottom: 20px;
+    text-align: center;
+    animation: slideUp 0.4s ease-out;
+
+    .doctor-name {
+      font-size: 1.6rem;
+      color: #333;
+      margin: 8px 0;
+      font-weight: 600;
+    }
+
+    .subtext {
+      font-size: 0.9rem;
+      color: #666;
+      margin: 4px 0;
+    }
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 16px 0;
+  }
+
+  .slots-card {
+    border-radius: 12px;
+    margin: 16px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+
+    .slots-list {
+      background: #ffffff;
+
+      .slot-item {
+        --background: #ffffff;
+        --padding-start: 16px;
+        --inner-padding-end: 16px;
+        border-bottom: 1px solid #f0f0f0;
+
+        &.selected {
+          --background: #efedfe;
+        }
+
+        &[disabled] {
+          opacity: 0.5;
+        }
+
+        ion-label {
+          color: #333;
+          font-size: 0.95rem;
+        }
+
+        .reserved-icon {
+          color: #999;
+        }
+
+        .selected-icon {
+          color: #605eea;
+        }
+      }
+    }
+  }
+
+  .button-container {
+    margin-top: 24px;
+    
+    .action-btn {
+      margin-bottom: 12px;
+      height: 48px;
+      --border-radius: 8px;
+      font-weight: 500;
+      
+      &.confirm-btn {
+        --background: #605eea;
+        --color: #ffffff;
+        
+        ion-icon {
+          margin-right: 8px;
+        }
+      }
+      
+      &.cancel-btn {
+        --background: #ffffff;
+        --color: #ff4961;
+        --border-color: #ff4961;
+        --border-style: solid;
+        --border-width: 1px;
+        
+        ion-icon {
+          color: #ff4961;
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .confirmed-cancel-btn {
+    margin-top: 24px;
+    height: 48px;
+    --border-radius: 8px;
+    --background: #ffffff;
+    --color: #ff4961;
+    --border-color: #ff4961;
+    --border-style: solid;
+    --border-width: 1px;
+    font-weight: 500;
+    
+    ion-icon {
+      color: #ff4961;
+      margin-right: 8px;
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-title>Profil du Médecin</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="medecin">
+  <ion-card>
+    <div class="doctor-profile">
+      <img [src]="medecin.image || 'assets/default-doctor.png'" [alt]="medecin.nom" class="doctor-img" />
+      <div class="doctor-info">
+        <h2>{{ medecin.nom }}</h2>
+        <p>Spécialité: {{ medecin.specialite }}</p>
+        <p>
+          <ion-icon *ngFor="let star of fullStars" name="star" color="warning"></ion-icon>
+          <ion-icon *ngIf="halfStar" name="star-half" color="warning"></ion-icon>
+          {{ medecin.note }}/5
+        </p>
+      </div>
+    </div>
+
+    <!-- Système d'onglets -->
+    <ion-segment style="color : #605eea;" [(ngModel)]="selectedTab" (ionChange)="segmentChanged($event)">
+      <ion-segment-button style="color : #605eea;" value="info">
+        <ion-label style="color : #605eea;">Informations</ion-label>
+      </ion-segment-button>
+      <ion-segment-button style="color : #605eea;" value="schedule">
+        <ion-label style="color : #605eea;">Disponibilités</ion-label>
+      </ion-segment-button>
+      <ion-segment-button style="color : #605eea;" value="location">
+        <ion-label style="color : #605eea;">Localisation</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div class="tab-content">
+      <!-- Informations -->
+      <div *ngIf="selectedTab === 'info'">
+        <h3>À propos</h3>
+        <p>{{ medecin.Propos }}</p>
+        <h3>Contact</h3>
+        <ion-item lines="none">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-label>{{ medecin.telephone }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input type="email" [value]="medecin.email" readonly></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="cash-outline"  slot="start"></ion-icon>
+          <ion-label>Consultation {{ medecin.disponibilites?.tarifConsultation}}€</ion-label>
+        </ion-item>
+      </div>
+
+      <!-- Disponibilités -->
+      <div *ngIf="selectedTab === 'schedule'">
+        <h3>Disponibilités</h3>
+        <p><strong> <ion-icon name="today-outline"></ion-icon> Jours: </strong> {{ medecin.disponibilites?.jours?.join(', ') }}</p>
+        <p><strong> <ion-icon name="timer-outline"></ion-icon> Horaires:</strong> {{ medecin.disponibilites?.heuresOuverture }} - {{ medecin.disponibilites?.heuresFermeture }}</p>
+        <ion-datetime
+          (ionChange)="onDateSelected($event)"
+          [min]="minDate"
+          [max]="maxDate"
+          [isDateEnabled]="isDateEnabled"
+          presentation="date"
+          [(ngModel)]="selectedDate">
+        </ion-datetime>
+      </div>
+
+      <!-- Localisation -->
+ <div *ngIf="selectedTab === 'location'">
+  <h3>Adresse du cabinet</h3>
+  <p>
+    <ion-icon name="location-outline"></ion-icon>
+    {{ medecin.localisation?.adresse }}
+  </p>
+  <div class="map-container">
+    <div #map style="height: 400px; width: 100%;"></div>
+  </div>
+</div>
+
+    </div>
+  </ion-card>
+</ion-content>

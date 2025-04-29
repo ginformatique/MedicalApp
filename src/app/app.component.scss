@@ -31,3 +31,36 @@ ion-footer {
       justify-content: center;
     }
   }
+
+  ion-footer.purple-tab-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  .purple-tab-bar {
+    ion-toolbar {
+      --background: #605eea;
+      --color: white;
+      --border-width: 0 !important;
+      padding-top: 8px;
+      height: 70px;
+      
+    
+      .tab-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
+        ion-icon {
+          font-size: 24px;
+          margin-bottom: 4px;
+        }
+        
+        .tab-label {
+          font-size: 12px;
+          font-weight: 500;
+        }
+      }
+    }
+  }

@@ -73,3 +73,65 @@ ion-segment {
 .directions-btn {
   margin-top: 10px;
 }
+
+
+.custom-calendar {
+  width: 100%;
+  --background: var(--ion-color-light);
+  --border-radius: 8px;
+  margin: 16px 0;
+}
+
+.time-slots {
+  margin-top: 20px;
+
+  ion-item {
+    --border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      --background: var(--ion-color-light);
+    }
+  }
+}
+
+.no-slots {
+  text-align: center;
+  color: var(--ion-color-medium);
+  margin: 20px 0;
+}
+
+.doctor-profile {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+
+  .doctor-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+  }
+
+  .doctor-info {
+    flex: 1;
+
+    h2 {
+      margin: 0 0 4px 0;
+      font-size: 1.2rem;
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.tab-content {
+  padding: 16px;
+}

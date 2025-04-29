@@ -1,29 +1,448 @@
+// Variables avancées
+$primary-color: #605eea;
+$primary-gradient: linear-gradient(150deg, #605eea 0%, #8a7cff 100%);
+$secondary-color: #fc5185;
+$success-color: #0acf97;
+$background-color: #f8faff;
+$box-shadow-soft: 0 10px 30px rgba(96, 94, 234, 0.15);
+$box-shadow-hard: 0 15px 35px rgba(96, 94, 234, 0.2);
+$text-color: #364361;
+$border-radius-lg: 16px;
+$border-radius-sm: 10px;
 
-.register-container {
-  max-width: 400px;
-  margin-top: 50px;
-  padding: 20px;
-}
-
-.register-form {
-  ion-item {
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    margin-bottom: 15px;
-    --highlight-color: var(--ion-color-primary);
+ion-content.ion-padding {
+  --background: #{$background-color};
+  position: relative;
+  
+  // Éléments décoratifs
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5%;
+    right: -10%;
+    width: 70vw;
+    height: 50vh;
+    background: linear-gradient(135deg, rgba(96, 94, 234, 0.03) 0%, rgba(138, 124, 255, 0.06) 100%);
+    border-radius: 50%;
+    z-index: 0;
+    filter: blur(40px);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5%;
+    left: -10%;
+    width: 70vw;
+    height: 40vh;
+    background: linear-gradient(135deg, rgba(138, 124, 255, 0.06) 0%, rgba(252, 81, 133, 0.03) 100%);
+    border-radius: 50%;
+    z-index: 0;
+    filter: blur(40px);
+  }
+  
+  .register-container {
+    position: relative;
+    z-index: 1;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  
+  .register-header {
+    text-align: center;
+    margin-bottom: 30px;
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: $text-color;
+      margin-bottom: 5px;
+    }
+    
+    p {
+      color: lighten($text-color, 25%);
+      font-size: 15px;
+      max-width: 80%;
+      margin: 0 auto;
+    }
+  }
+  
+  .register-form {
+    flex: 1;
+    background: white;
+    border-radius: $border-radius-lg;
+    padding: 30px;
+    box-shadow: $box-shadow-soft;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 25px;
+    
+    // Bordure décorative
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 6px;
+      background: $primary-gradient;
+    }
+    
+    // Indicateur de progression
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: lighten($text-color, 50%);
+        z-index: 1;
+      }
+      
+      .step {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid lighten($text-color, 40%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: lighten($text-color, 30%);
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+        
+        &.active {
+          background: $primary-color;
+          border-color: $primary-color;
+          color: white;
+          box-shadow: 0 0 0 3px rgba(96, 94, 234, 0.2);
+        }
+        
+        &.completed {
+          background: $success-color;
+          border-color: $success-color;
+          color: white;
+        }
+      }
+    }
+    
+    // Styles des champs
+    ion-item {
+      --background: #{lighten($background-color, 1%)};
+      --padding-start: 15px;
+      --padding-end: 15px;
+      --inner-padding-end: 15px;
+      --highlight-color-focused: #{$primary-color};
+      --border-color: transparent;
+      border-radius: $border-radius-sm;
+      margin-bottom: 16px;
+      --min-height: 55px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.02);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      
+      &.item-has-focus {
+        --background: white;
+        box-shadow: 0 5px 15px rgba(96, 94, 234, 0.1);
+        transform: translateY(-2px);
+      }
+      
+      ion-label {
+        --color: #{lighten($text-color, 20%)};
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+      
+      ion-input {
+        --color: #{$text-color};
+        font-size: 16px;
+        --placeholder-color: #{lighten($text-color, 35%)};
+        --placeholder-opacity: 0.8;
+        font-weight: 500;
+      }
+      
+      ion-icon {
+        color: lighten($text-color, 20%);
+        font-size: 20px;
+        margin-right: 10px;
+      }
+      
+      &.item-has-error {
+        --background: rgba(252, 81, 133, 0.05);
+        --border-color: #{$secondary-color};
+        
+        ion-label, ion-icon {
+          --color: #{$secondary-color};
+          color: $secondary-color;
+        }
+      }
+      
+      &.item-has-success {
+        --background: rgba(10, 207, 151, 0.05);
+        --border-color: #{$success-color};
+        
+        ion-label, ion-icon {
+          --color: #{$success-color};
+          color: $success-color;
+        }
+      }
+    }
+    
+    // Messages d'erreur
+    .error-message {
+      color: $secondary-color;
+      font-size: 12px;
+      margin: -12px 0 12px 5px;
+      display: flex;
+      align-items: center;
+      
+      ion-icon {
+        font-size: 14px;
+        margin-right: 5px;
+      }
+    }
+    
+    // Accord sur les conditions
+    .terms-agreement {
+      display: flex;
+      align-items: flex-start;
+      margin: 20px 0 25px;
+      
+      ion-checkbox {
+        --size: 18px;
+        --checkbox-background-checked: #{$primary-color};
+        --border-color: #{lighten($text-color, 40%)};
+        --border-color-checked: #{$primary-color};
+        --checkmark-color: white;
+        margin-right: 10px;
+        margin-top: 2px;
+      }
+      
+      .terms-text {
+        font-size: 14px;
+        color: lighten($text-color, 20%);
+        line-height: 1.5;
+        
+        a {
+          color: $primary-color;
+          font-weight: 500;
+          text-decoration: none;
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+    
+    // Bouton principal
+    .register-button {
+      --background: #{$primary-gradient};
+      --border-radius: 27px;
+      --box-shadow: #{$box-shadow-hard};
+      height: 54px;
+      overflow: hidden;
+      position: relative;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      margin-top: 10px;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: translateX(-100%);
+      }
+      
+      &:active {
+        --background: #{darken($primary-color, 5%)};
+        --box-shadow: 0 5px 15px rgba(96, 94, 234, 0.3);
+        transform: translateY(2px);
+      }
+      
+      &:hover::before {
+        animation: shimmer 1.5s infinite;
+      }
+    }
+    
+    // Options de connexion alternatives
+    .alternative-signup {
+      margin-top: 25px;
+      text-align: center;
+      
+      .divider {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        
+        .line {
+          flex: 1;
+          height: 1px;
+          background: lighten($text-color, 50%);
+        }
+        
+        .text {
+          padding: 0 15px;
+          color: lighten($text-color, 30%);
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+      
+      .social-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        
+        .social-button {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          border: 1px solid lighten($text-color, 50%);
+          transition: all 0.3s ease;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+          
+          ion-icon {
+            font-size: 20px;
+          }
+          
+          &.google ion-icon {
+            color: #DB4437;
+          }
+          
+          &.facebook ion-icon {
+            color: #4267B2;
+          }
+          
+          &.apple ion-icon {
+            color: #000000;
+          }
+          
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.07);
+          }
+        }
+      }
+    }
+  }
+  
+  // Lien de connexion
+  .login-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    
+    p {
+      margin: 0 10px 0 0;
+      color: lighten($text-color, 20%);
+      font-size: 15px;
+    }
+    
+    ion-button {
+      --background: transparent;
+      --box-shadow: none;
+      --color: #{$primary-color};
+      font-weight: 600;
+      height: auto;
+      --padding-top: 0;
+      --padding-bottom: 0;
+      --padding-start: 8px;
+      --padding-end: 8px;
+      
+      &:hover {
+        --background: rgba(96, 94, 234, 0.05);
+      }
+    }
   }
 }
 
-.register-button {
-  margin: 20px 0;
+// Animations
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
-.login-link {
-  text-align: center;
-  margin-top: 20px;
+// Animation d'entrée des éléments
+.register-container {
+  .register-header, .register-form, .login-link {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s forwards;
+  }
   
-  p {
-    margin: 0;
-    color: var(--ion-color-medium);
+  .register-header {
+    animation-delay: 0.2s;
+  }
+  
+  .register-form {
+    animation-delay: 0.4s;
+  }
+  
+  .login-link {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Media queries pour la responsivité
+@media (max-width: 576px) {
+  ion-content.ion-padding {
+    --padding-start: 15px;
+    --padding-end: 15px;
+    
+    .register-container {
+      padding: 10px 0;
+    }
+    
+    .register-header {
+      margin-bottom: 20px;
+      
+      h1 {
+        font-size: 24px;
+      }
+    }
+    
+    .register-form {
+      padding: 25px 20px;
+      
+      ion-item {
+        --min-height: 50px;
+      }
+      
+      .register-button {
+        height: 50px;
+      }
+    }
   }
 }

@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/patients"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Documents Médicaux</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Upload Card -->
+  <ion-card class="upload-card">
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Nouveau Document</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form>
+        <ion-item>
+          <ion-label position="stacked">Type de document</ion-label>
+          <ion-select [(ngModel)]="newDocument.type" name="type" interface="popover">
+            <ion-select-option value="prescription">Ordonnance</ion-select-option>
+            <ion-select-option value="report">Compte-rendu</ion-select-option>
+            <ion-select-option value="scan">Scanner/IRM</ion-select-option>
+            <ion-select-option value="other">Autre</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Description</ion-label>
+          <ion-textarea [(ngModel)]="newDocument.description" name="description" rows="3"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Tags (séparés par des virgules)</ion-label>
+          <ion-input [(ngModel)]="newDocument.tags" name="tags"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-checkbox [(ngModel)]="newDocument.isUrgent" name="isUrgent" slot="start"></ion-checkbox>
+          <ion-label>Document urgent</ion-label>
+        </ion-item>
+
+        <div class="file-selection">
+          <ion-button expand="block" fill="outline" (click)="selectFile()">
+            <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+            Sélectionner un fichier
+          </ion-button>
+          
+          <div class="file-info" *ngIf="selectedFile">
+            <ion-icon name="document" color="primary"></ion-icon>
+            <span>{{ selectedFile.name }}</span>
+            <ion-badge color="success">{{ selectedFile.size }}</ion-badge>
+          </div>
+        </div>
+
+        <ion-button expand="block" color="primary" 
+                   (click)="uploadDocument()" 
+                   [disabled]="!selectedFile"
+                   class="upload-button">
+          <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+          Envoyer le document
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Documents List -->
+  <ion-list class="documents-list" *ngIf="documents.length > 0">
+    <ion-list-header>
+      <ion-label>Documents existants</ion-label>
+    </ion-list-header>
+    
+    <ion-item-sliding *ngFor="let doc of documents">
+      <ion-item detail="true" (click)="viewDocument(doc)">
+        <ion-icon slot="start" [name]="getFileIcon(doc.fileType)"></ion-icon>
+        <ion-label>
+          <h2>{{ doc.filename }}</h2>
+          <p>{{ doc.description }}</p>
+          <p class="meta-info">
+            <ion-badge color="medium" *ngIf="doc.isUrgent">URGENT</ion-badge>
+            <span>Envoyé le {{ doc.uploadDate | date:'mediumDate' }}</span>
+          </p>
+        </ion-label>
+      </ion-item>
+      
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteDocument(doc.id)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <div class="empty-state" *ngIf="documents.length === 0">
+    <ion-icon name="documents-outline"></ion-icon>
+    <p>Aucun document disponible</p>
+  </div>
+</ion-content>

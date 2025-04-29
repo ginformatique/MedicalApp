@@ -1,0 +1,83 @@
+<ion-header class="header-gradient">
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Réserver avec {{ doctorName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()" class="close-btn">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Doctor Name Section -->
+  <div class="doctor-header">
+    <h2 class="doctor-name">{{ doctorName }}</h2>
+    <p class="subtext">Sélectionnez un créneau pour votre rendez-vous</p>
+  </div>
+
+  <!-- Available Time Slots -->
+  <h3 class="section-title">Créneaux disponibles</h3>
+  <ion-card class="slots-card">
+    <ion-list class="slots-list">
+      <ion-item 
+        *ngFor="let creneau of creneaux" 
+        (click)="selectTimeSlot(creneau.heure)" 
+        [disabled]="isSlotReserved(creneau.heure)" 
+        class="slot-item"
+        [ngClass]="{'selected': selectedSlot === creneau.heure && !isSlotReserved(creneau.heure)}"
+      >
+        <ion-label>{{ creneau.heure }}</ion-label>
+        <ion-icon 
+          name="lock-closed" 
+          slot="end" 
+          *ngIf="isSlotReserved(creneau.heure)" 
+          class="reserved-icon"
+        ></ion-icon>
+        <ion-icon 
+          name="checkmark-circle" 
+          slot="end" 
+          *ngIf="selectedSlot === creneau.heure && !isSlotReserved(creneau.heure)" 
+          class="selected-icon"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <!-- Buttons Section -->
+  <div class="button-container" *ngIf="!isConfirmed">
+    <!-- Confirm Button -->
+    <ion-button 
+      expand="block" 
+      (click)="confirmBooking()" 
+      [disabled]="!selectedSlot || isSlotReserved(selectedSlot)" 
+      class="action-btn confirm-btn"
+    >
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      Confirmer à {{ selectedSlot || '...' }}
+    </ion-button>
+    <!-- Cancel During Booking Button -->
+    <ion-button 
+      expand="block" 
+      color="danger" 
+      (click)="cancelDuringBooking()" 
+      [disabled]="!selectedSlot" 
+      class="action-btn cancel-btn"
+    >
+      <ion-icon name="close-outline" slot="start"></ion-icon>
+      Annuler la sélection
+    </ion-button>
+  </div>
+
+  <!-- Cancel After Confirmation Button -->
+  <ion-button 
+    *ngIf="isConfirmed" 
+    expand="block" 
+    color="danger" 
+    (click)="cancelBooking()" 
+    class="action-btn confirmed-cancel-btn"
+  >
+    <ion-icon name="close-outline" slot="start"></ion-icon>
+    Supprimer le rendez-vous
+  </ion-button>
+</ion-content>

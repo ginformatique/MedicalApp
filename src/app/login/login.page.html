@@ -1,20 +1,64 @@
 <ion-content>
-  <ion-item style="margin-top: 100px;">
-    <ion-label position="floating">Email</ion-label>
-    <ion-input type="email" [(ngModel)]="email"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Password</ion-label>
-    <ion-input type="password" [(ngModel)]="password"></ion-input>
-  </ion-item>
-
-  <ion-button expand="full" (click)="login()">Login</ion-button>
-
-  <div class="login-link">
-    <p>Pas encore inscrit ?</p>
-    <ion-button fill="clear" routerLink="/register">
-      S'inscrire
-    </ion-button>
+  <div class="login-container">
+    <!-- En-tête avec logo -->
+    <div class="login-header">
+      <div class="logo">
+        <ion-icon name="medkit-outline"></ion-icon>
+      </div>
+      <h1>Patient care+</h1>
+      <p>Connectez-vous à votre compte</p>
+    </div>
+    
+    <div class="login-form">
+      <!-- Champ email avec icône -->
+      <ion-item>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" [(ngModel)]="email"></ion-input>
+      </ion-item>
+      
+      <!-- Champ mot de passe avec icône -->
+      <ion-item>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-label position="floating">Mot de passe</ion-label>
+        <ion-input type="password" [(ngModel)]="password"></ion-input>
+      </ion-item>
+      
+      <!-- Options supplémentaires -->
+      <div class="login-options">
+        <div class="remember-me">
+          <ion-checkbox></ion-checkbox>
+          <span>Se souvenir de moi</span>
+        </div>
+        <a href="#" class="forgot-password">Mot de passe oublié?</a>
+      </div>
+      
+      <!-- Bouton de connexion -->
+      <ion-button expand="block" class="login-button" (click)="login()">
+        Se connecter
+      </ion-button>
+       <!-- Lien vers l'inscription -->
+    <div class="signup-link">
+      Pas encore de compte? <a routerLink="/register">S'inscrire</a>
+    </div>
+      <!-- Séparateur -->
+      <div class="divider">
+        <div class="line"></div>
+        <div class="text">OU</div>
+        <div class="line"></div>
+      </div>
+      
+      <!-- Boutons sociaux -->
+      <div class="social-buttons">
+        <div class="social-button google">
+          <ion-icon name="logo-google"></ion-icon>
+        </div>
+        <div class="social-button facebook">
+          <ion-icon name="logo-facebook"></ion-icon>
+        </div>
+      </div>
+    </div>
+    
+   
   </div>
 </ion-content>

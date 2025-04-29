@@ -7,77 +7,67 @@
           <ion-title>Menu</ion-title>
         </ion-toolbar>
       </ion-header>
-
       <ion-content>
         <ion-list>
           <ion-item routerLink="/home" routerLinkActive="selected">
             <ion-icon name="home-outline" slot="start"></ion-icon>
             <ion-label>Accueil</ion-label>
           </ion-item>
+          
+          <ion-item routerLink="/medical-history" routerLinkActive="selected">
+            <ion-icon name="medical-outline" slot="start"></ion-icon>
+            <ion-label>Historique Médical</ion-label>
+          </ion-item>
+          
+          <ion-item routerLink="/medical-documents" routerLinkActive="selected">
+            <ion-icon name="document-text-outline" slot="start"></ion-icon>
+            <ion-label>Documents Médicaux</ion-label>
+          </ion-item>
+          
           <ion-item routerLink="/doctors" routerLinkActive="selected">
-            <ion-icon name="people-outline" slot="start"></ion-icon>
+            <ion-icon name="medkit-outline" slot="start"></ion-icon>
             <ion-label>Médecins</ion-label>
           </ion-item>
-          <ion-item routerLink="/appointments" routerLinkActive="selected">
-            <ion-icon name="calendar-outline" slot="start"></ion-icon>
-            <ion-label>Rendez-vous</ion-label>
-          </ion-item>
+          
           <ion-item routerLink="/login" routerLinkActive="selected">
-            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-icon name="log-in-outline" slot="start"></ion-icon>
             <ion-label>Connexion</ion-label>
           </ion-item>
         </ion-list>
+        
       </ion-content>
     </ion-menu>
-
-    <!-- Contenu principal -->
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
-
-  <!-- En-tête -->
-  <ion-header>
-    <ion-toolbar color="primary">
+  
+   <ion-header *ngIf="!(router.url.includes('/patient') || router.url.includes('/doctor-profile')  || router.url.includes('/register')  || router.url.includes('/login')    )"   class="purple-tab-bar">
+    <ion-toolbar >
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>Patient care+</ion-title>
     </ion-toolbar>
   </ion-header>
+  
+      
+<ion-footer class="purple-tab-bar">
+  <ion-toolbar>
+    <ion-row routerLink="/home" class="ion-justify-content-around">
+      <ion-col class="tab-item" size="3">
+        <ion-icon name="home"></ion-icon>
 
-  <!-- Footer -->
-  <ion-footer>
-    <ion-toolbar>
-      <ion-grid>
-        <ion-row class="ion-align-items-center">
-          <ion-col size="3" class="ion-text-center">
-            <ion-button routerLink="/home"  fill="clear">
-              <ion-icon slot="icon-only" name="home"></ion-icon>
-              <ion-label>Accueil</ion-label>
-            </ion-button>
-          </ion-col>
-          
-          <ion-col size="3" class="ion-text-center">
-            <ion-button fill="clear">
-              <ion-icon slot="icon-only" name="people"></ion-icon>
-              <ion-label>Patients</ion-label>
-            </ion-button>
-          </ion-col>
-          
-          <ion-col size="3" class="ion-text-center">
-            <ion-button fill="clear">
-              <ion-icon slot="icon-only" name="calendar"></ion-icon>
-              <ion-label>Agenda</ion-label>
-            </ion-button>
-          </ion-col>
-          
-          <ion-col size="3" class="ion-text-center">
-            <ion-button fill="clear">
-              <ion-icon slot="icon-only" name="person"></ion-icon>
-              <ion-label>Profil</ion-label>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-toolbar>
-  </ion-footer>
+      </ion-col>
+      <ion-col class="tab-item" size="3">
+        <ion-icon name="apps-outline"></ion-icon>
+        
+      </ion-col>
+      <ion-col class="tab-item" size="3">
+        <ion-icon name="search"></ion-icon>
+      </ion-col>
+      <ion-col  routerLink="/profile" class="tab-item" size="3">
+        <ion-icon name="person"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>
 </ion-app>
