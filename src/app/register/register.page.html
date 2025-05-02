@@ -3,12 +3,12 @@
     <form class="register-form">
       <ion-item>
         <ion-label position="floating">Nom</ion-label>
-        <ion-input type="text" [(ngModel)]="nom" name="nom"></ion-input>
+        <ion-input type="text" [(ngModel)]="lastName" name="lastName"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Prénom</ion-label>
-        <ion-input type="text" [(ngModel)]="prenom" name="prenom"></ion-input>
+        <ion-input type="text" [(ngModel)]="firstName" name="firstName"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -23,10 +23,27 @@
           <ion-select-option value="medecin">Médecin</ion-select-option>
         </ion-select>
       </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Date de naissance</ion-label>
+        <ion-input type="date" [(ngModel)]="dateOfBirth" name="dateOfBirth"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Adresse</ion-label>
+        <ion-input type="text" [(ngModel)]="address" name="address"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Téléphone</ion-label>
+        <ion-input type="tel" [(ngModel)]="phone" name="phone"></ion-input>
+      </ion-item>
+
       <ion-item>
         <ion-label position="floating">Mot de passe</ion-label>
         <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
       </ion-item>
+
       <ion-item>
         <ion-label position="floating">Confirmer le mot de passe</ion-label>
         <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword"></ion-input>

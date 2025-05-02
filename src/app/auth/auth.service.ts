@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
-// Define the User interface
 export interface User {
   id: string;
   email: string;
   role: string;
   firstName: string;
   lastName: string;
+  patientId?: string;
+  doctorId?: string;
 }
 
-// Define the LoginResponse interface
 export interface LoginResponse {
+  success: boolean;
   message: string;
   user: User;
 }
@@ -22,35 +24,52 @@ export interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api'; // Replace with your backend URL
+  private apiUrl = 'http://localhost:5000/api';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    // Load user from localStorage on startup
+  constructor(private http: HttpClient, private router: Router) {
+    this.loadCurrentUser();
+  }
+
+  private loadCurrentUser(): void {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser));
     }
   }
 
-  login(email: string, password: string): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
-      .pipe(
-        tap((response) => {
-          // Store user in localStorage and update subject
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          this.currentUserSubject.next(response.user);
-        }),
-        catchError(this.handleError)
-      );
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData).pipe(
+      tap((response: any) => {
+        if (response.user) {
+          this.storeUser(response.user);
+        }
+      }),
+      catchError(this.handleError)
+    );
   }
 
-  logout() {
-    // Clear user from storage and reset subject
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap((response) => {
+        if (response.success && response.user) {
+          this.storeUser(response.user);
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  private storeUser(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  logout(): void {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
   }
 
   getCurrentUser(): User | null {
@@ -61,14 +80,27 @@ export class AuthService {
     return !!this.getCurrentUser();
   }
 
+  isPatient(): boolean {
+    const user = this.getCurrentUser();
+    return user ? user.role === 'patient' : false;
+  }
+
+  isDoctor(): boolean {
+    const user = this.getCurrentUser();
+    return user ? user.role === 'doctor' : false;
+  }
+
+  getPatientId(): string | null {
+    const user = this.getCurrentUser();
+    return user?.patientId || null;
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = error.error.message;
     } else {
-      // Server-side error
-      errorMessage = error.error.error || `Error ${error.status}`;
+      errorMessage = error.error?.message || `Error ${error.status}`;
     }
     return throwError(() => new Error(errorMessage));
   }

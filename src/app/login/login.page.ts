@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, User, LoginResponse } from '../auth/auth.service';
 import { ToastController } from '@ionic/angular';
 
@@ -7,7 +7,7 @@ import { ToastController } from '@ionic/angular';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  standalone: false 
+  standalone: false
 })
 export class LoginPage {
   email: string = '';
@@ -16,6 +16,7 @@ export class LoginPage {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private toastController: ToastController
   ) {}
 
@@ -30,11 +31,19 @@ export class LoginPage {
       next: (response: LoginResponse) => {
         const user: User = response.user;
         if (user) {
-          // Redirect based on role
-          if (user.role === 'patient') {
-            this.router.navigateByUrl(`/patient/${user.id}`);
-          } else if (user.role === 'doctor') {
-            this.router.navigateByUrl('/doctors');
+          // Check for returnUrl
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || null;
+
+          if (returnUrl) {
+            // Redirect to returnUrl
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            // Redirect based on role
+            if (user.role === 'patient') {
+              this.router.navigateByUrl(`/patient/${user.id}`);
+            } else if (user.role === 'doctor') {
+              this.router.navigateByUrl('/doctors');
+            }
           }
           this.presentToast('Connexion réussie !', 'success');
         } else {
@@ -43,7 +52,7 @@ export class LoginPage {
       },
       error: (error: any) => {
         this.presentToast(error.message || 'Erreur lors de la connexion', 'danger');
-      },
+      }
     });
   }
 
@@ -52,9 +61,8 @@ export class LoginPage {
       message,
       duration: 2000,
       color,
-      position: 'bottom',
+      position: 'bottom'
     });
     await toast.present();
   }
 }
-

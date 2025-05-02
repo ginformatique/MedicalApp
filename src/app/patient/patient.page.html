@@ -56,29 +56,6 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Medical Information -->
-  <ion-card class="info-card">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-icon name="medkit-outline" slot="start"></ion-icon>
-        Informations Médicales
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item lines="none">
-        <ion-label>
-          <h3>Groupe Sanguin</h3>
-          <p>{{ patient?.groupeSanguin || 'Non renseigné' }}</p>
-        </ion-label>
-      </ion-item>
-      <ion-item lines="none">
-        <ion-label>
-          <h3>Antécédents Médicaux</h3>
-          <p class="multi-line">{{ patient?.antecedentsMedicaux || 'Aucun antécédent' }}</p>
-        </ion-label>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
 
   <!-- Appointments Section -->
   <ion-card class="info-card">

@@ -14,11 +14,19 @@ export class PatientService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
+  getPatientAppointments(patientId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${patientId}/appointments`);
+  }
+
   getNotifications(patientId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/patients/${patientId}/notifications`);
+    return this.http.get<any[]>(`${this.apiUrl}/${patientId}/notifications`);
   }
   
   markNotificationAsRead(notificationId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/notifications/${notificationId}/read`, {});
+  }
+
+  markAllNotificationsAsRead(notificationIds: string[]): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/notifications/mark-all-read`, { ids: notificationIds });
   }
 }

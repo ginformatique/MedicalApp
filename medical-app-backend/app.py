@@ -666,7 +666,6 @@ def search_medecins():
         return jsonify({"error": str(e)}), 500
     
 ###########################################
-
 def parse_json(data):
     """Convert ObjectIds to strings for JSON serialization."""
     if isinstance(data, list):
@@ -685,7 +684,8 @@ def register():
         data = request.get_json()
         
         # Validation des données
-        required_fields = ['firstName', 'lastName', 'email', 'password', 'role']
+        required_fields = ['firstName', 'lastName', 'email', 'password', 'role', 
+                         'dateOfBirth', 'address', 'phone']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Le champ {field} est requis'}), 400
@@ -701,6 +701,9 @@ def register():
             'email': data['email'],
             'password': data['password'],  # Mot de passe en clair
             'role': data['role'],
+            'dateOfBirth': data['dateOfBirth'],
+            'address': data['address'],
+            'phone': data['phone'],
             'createdAt': datetime.utcnow()
         }
         
@@ -715,7 +718,11 @@ def register():
                 'firstName': user['firstName'],
                 'lastName': user['lastName'],
                 'email': user['email'],
-                'role': user['role']
+                'role': user['role'],
+                'dateOfBirth': user['dateOfBirth'],
+                'address': user['address'],
+                'phone': user['phone'],
+                'createdAt': user['createdAt']
             }
         }), 201
         
@@ -750,6 +757,9 @@ def login():
             "role": user['role'],
             "firstName": user['firstName'],
             "lastName": user['lastName'],
+            "dateOfBirth": user.get('dateOfBirth', ''),
+            "address": user.get('address', ''),
+            "phone": user.get('phone', ''),
             "createdAt": user['createdAt']
         }
 
@@ -781,7 +791,6 @@ def login():
     except Exception as e:
         app.logger.error(f"Error logging in user: {str(e)}")
         return jsonify({"success": False, "message": "Internal server error"}), 500
-    
     
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

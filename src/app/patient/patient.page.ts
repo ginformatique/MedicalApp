@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../services/patient.service';
 import { NotificationService } from '../services/notification.service';
-import { AppointmentService } from '../services/appointment.service';
-import { AppointService } from '../services/appoint.service';
 import { HeaderService } from '../header.service';
 import { NavController, LoadingController } from '@ionic/angular';
 
@@ -11,7 +9,7 @@ import { NavController, LoadingController } from '@ionic/angular';
   selector: 'app-patient',
   templateUrl: './patient.page.html',
   styleUrls: ['./patient.page.scss'],
-  standalone :  false 
+  standalone  :  false  
 })
 export class PatientPage implements OnInit {
   patient: any = null;
@@ -27,8 +25,6 @@ export class PatientPage implements OnInit {
     private route: ActivatedRoute,
     private patientService: PatientService,
     private notificationService: NotificationService,
-    private appointmentService: AppointmentService,
-    private appointService: AppointService,
     private headerService: HeaderService,
     private navCtrl: NavController,
     private loadingCtrl: LoadingController
@@ -72,7 +68,18 @@ export class PatientPage implements OnInit {
   async loadPatient(id: string) {
     try {
       const data = await this.patientService.getPatientById(id).toPromise();
-      this.patient = data;
+      this.patient = {
+        ...data,
+        nom: data.lastName,
+        prenom: data.firstName,
+        dateNaissance: data.dateOfBirth,
+        telephone: data.phone,
+        email: data.email,
+        adresse: data.address,
+        groupeSanguin: data.bloodGroup || 'Non renseigné',
+        antecedentsMedicaux: data.medicalHistory || 'Aucun antécédent',
+        photo: data.photoUrl || 'assets/patient.jpg'
+      };
     } catch (err) {
       console.error('Error loading patient:', err);
       this.navCtrl.navigateBack('/');
@@ -86,22 +93,22 @@ export class PatientPage implements OnInit {
     await loading.present();
   
     try {
-      const data = await this.appointService.getPatientAppointments(patientId).toPromise();
+      const data = await this.patientService.getPatientAppointments(patientId).toPromise();
       
-      // Trier
+      // Trier les rendez-vous
       this.appointments = (data || []).sort((a, b) => {
-        const dateA = new Date(`${a.date}T${a.time}`);
-        const dateB = new Date(`${b.date}T${b.time}`);
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
         return dateA.getTime() - dateB.getTime();
       });
   
-      // Filtrer
+      // Filtrer les rendez-vous
       const now = new Date();
       this.upcomingAppointments = this.appointments.filter(appt => 
-        new Date(`${appt.date}T${appt.time}`) >= now
+        new Date(appt.date) >= now
       );
       this.pastAppointments = this.appointments.filter(appt => 
-        new Date(`${appt.date}T${appt.time}`) < now
+        new Date(appt.date) < now
       );
   
     } catch (err) {
@@ -121,7 +128,7 @@ export class PatientPage implements OnInit {
   async loadNotifications(patientId: string) {
     this.isLoading = true;
     try {
-      const data = await this.notificationService.getPatientNotifications(patientId).toPromise();
+      const data = await this.patientService.getNotifications(patientId).toPromise();
       this.notifications = Array.isArray(data)
         ? data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         : [];
@@ -150,7 +157,7 @@ export class PatientPage implements OnInit {
     if (!this.patient) return;
 
     try {
-      await this.notificationService.markAsRead(notificationId).toPromise();
+      await this.patientService.markNotificationAsRead(notificationId).toPromise();
       const notification = this.notifications.find(n => n.id === notificationId);
       if (notification && !notification.isRead) {
         notification.isRead = true;
@@ -169,7 +176,7 @@ export class PatientPage implements OnInit {
       .map(n => n.id);
 
     try {
-      await this.notificationService.markAllAsRead(unreadIds).toPromise();
+      await this.patientService.markAllNotificationsAsRead(unreadIds).toPromise();
       this.notifications.forEach(n => n.isRead = true);
       this.unreadNotifications = 0;
     } catch (err) {

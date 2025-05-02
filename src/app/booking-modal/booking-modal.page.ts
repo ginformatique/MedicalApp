@@ -3,12 +3,14 @@ import { ModalController, AlertController, LoadingController, NavController } fr
 import { AppointmentService } from '../services/appointment.service';
 import { MedecinService } from '../services/medecin.service';
 import { NotificationService } from '../services/notification.service';
+import { AuthService } from '../auth/auth.service'; 
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-booking-modal',
   templateUrl: './booking-modal.page.html',
   styleUrls: ['./booking-modal.page.scss'],
-  standalone  :  false  
+  standalone: false  
 })
 export class BookingModalPage implements OnInit {
   @Input() selectedDate: string = '';
@@ -18,7 +20,7 @@ export class BookingModalPage implements OnInit {
   
   selectedSlot: string = '';
   isProcessing: boolean = false;
-  currentPatientId: string = '67feb86a6189d0363c375c23'; // À remplacer par l'ID réel du patient
+  currentPatientId: string | null = null; // Initialize as null
   rendezvousId: string | null = null;
   isConfirmed: boolean = false;
   patientAppointments: any[] = [];
@@ -30,10 +32,15 @@ export class BookingModalPage implements OnInit {
     private appointmentService: AppointmentService,
     private medecinService: MedecinService,
     private notificationService: NotificationService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private authService: AuthService, // Add AuthService
+    private router: Router // Add Router
   ) {}
 
   ngOnInit() {
+    // Set patient ID from authenticated user
+    this.currentPatientId = this.authService.getPatientId();
+    
     console.log('Données reçues:', {
       doctorName: this.doctorName,
       doctorId: this.doctorId,
@@ -44,19 +51,25 @@ export class BookingModalPage implements OnInit {
       console.error('Doctor ID is missing');
       this.showAlert('Erreur', 'ID du médecin manquant');
     }
-    this.loadPatientAppointments();
+    if (this.currentPatientId) {
+      this.loadPatientAppointments();
+    } else {
+      console.error('Patient ID is missing');
+    }
   }
 
   loadPatientAppointments() {
-    this.appointmentService.getPatientAppointments(this.currentPatientId).subscribe(
-      (response: any) => {
-        this.patientAppointments = response;
-        console.log('Patient appointments:', this.patientAppointments);
-      },
-      (error: any) => {
-        console.error('Error fetching patient appointments:', error);
-      }
-    );
+    if (this.currentPatientId) {
+      this.appointmentService.getPatientAppointments(this.currentPatientId).subscribe(
+        (response: any) => {
+          this.patientAppointments = response;
+          console.log('Patient appointments:', this.patientAppointments);
+        },
+        (error: any) => {
+          console.error('Error fetching patient appointments:', error);
+        }
+      );
+    }
   }
 
   dismissModal() {
@@ -81,7 +94,18 @@ export class BookingModalPage implements OnInit {
   }
 
   async confirmBooking() {
+    // Check if user is authenticated
+    if (!this.authService.isAuthenticated()) {
+      // Redirect to login with return URL
+      await this.modalCtrl.dismiss(); // Close the modal
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: '/booking-modal' } // Adjust return URL as needed
+      });
+      return;
+    }
+
     if (!this.selectedSlot || this.isSlotReserved(this.selectedSlot)) {
+      await this.showAlert('Erreur', 'Veuillez sélectionner un créneau valide.');
       return;
     }
 
@@ -126,6 +150,15 @@ export class BookingModalPage implements OnInit {
   private async processBooking() {
     if (!this.doctorId) {
       await this.showAlert('Erreur', 'ID du médecin manquant');
+      return;
+    }
+
+    if (!this.currentPatientId) {
+      await this.showAlert('Erreur', 'Vous devez être connecté pour prendre un rendez-vous.');
+      await this.modalCtrl.dismiss();
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: '/booking-modal' }
+      });
       return;
     }
 
@@ -207,12 +240,12 @@ export class BookingModalPage implements OnInit {
 
             try {
               console.log('Canceling rendezvous:', this.rendezvousId, 'for patient:', this.currentPatientId);
-              await this.appointmentService.cancelAppointment(this.rendezvousId!, this.currentPatientId).toPromise();
+              await this.appointmentService.cancelAppointment(this.rendezvousId!, this.currentPatientId!).toPromise();
               
               // Envoi de la notification d'annulation
               const notificationMessage = `Rendez-vous annulé avec Dr. ${this.doctorName} le ${this.formatDate(this.selectedDate)} à ${this.selectedSlot}`;
               await this.notificationService.createNotification(
-                this.currentPatientId,
+                this.currentPatientId!,
                 notificationMessage
               ).toPromise();
 
