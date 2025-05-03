@@ -677,30 +677,30 @@ def parse_json(data):
             data['userId'] = str(data['userId'])
     return data
 
-# Authentication Endpoints
+# Nouvelle implémentation utilisant patients
 @app.route('/api/register', methods=['POST'])
-def register():
+def register_patient():
     try:
         data = request.get_json()
         
         # Validation des données
-        required_fields = ['firstName', 'lastName', 'email', 'password', 'role', 
+        required_fields = ['firstName', 'lastName', 'email', 'password', 
                          'dateOfBirth', 'address', 'phone']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Le champ {field} est requis'}), 400
         
         # Vérifier si l'email existe déjà
-        if mongo.db.users.find_one({'email': data['email']}):
+        if mongo.db.patients.find_one({'email': data['email']}):
             return jsonify({'error': 'Cet email est déjà utilisé'}), 400
         
-        # Créer l'utilisateur (sans hachage du mot de passe)
-        user = {
+        # Créer le patient
+        patient = {
             'firstName': data['firstName'],
             'lastName': data['lastName'],
             'email': data['email'],
-            'password': data['password'],  # Mot de passe en clair
-            'role': data['role'],
+            'password': data['password'],  # Mot de passe en clair (à hasher en production)
+            'role': 'patient',  # Toujours patient pour cette collection
             'dateOfBirth': data['dateOfBirth'],
             'address': data['address'],
             'phone': data['phone'],
@@ -708,89 +708,90 @@ def register():
         }
         
         # Insérer dans la base de données
-        result = mongo.db.users.insert_one(user)
-        user['_id'] = str(result.inserted_id)
+        result = mongo.db.patients.insert_one(patient)
+        patient['_id'] = str(result.inserted_id)
         
         return jsonify({
-            'message': 'Utilisateur créé avec succès',
-            'user': {
-                'id': user['_id'],
-                'firstName': user['firstName'],
-                'lastName': user['lastName'],
-                'email': user['email'],
-                'role': user['role'],
-                'dateOfBirth': user['dateOfBirth'],
-                'address': user['address'],
-                'phone': user['phone'],
-                'createdAt': user['createdAt']
+            'message': 'Inscription réussie',
+            'patient': {
+                'id': patient['_id'],
+                'firstName': patient['firstName'],
+                'lastName': patient['lastName'],
+                'email': patient['email'],
+                'role': patient['role'],
+                'dateOfBirth': patient['dateOfBirth'],
+                'address': patient['address'],
+                'phone': patient['phone'],
+                'createdAt': patient['createdAt']
             }
         }), 201
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
+######################################################
 
 @app.route('/api/login', methods=['POST'])
 def login():
     try:
         data = request.get_json()
         if not data:
-            return jsonify({"success": False, "message": "No data provided"}), 400
+            return jsonify({"success": False, "message": "Aucune donnée fournie"}), 400
 
         email = data.get('email', '').strip().lower()
         password = data.get('password', '').strip()
 
         if not email or not password:
-            return jsonify({"success": False, "message": "Email and password are required!"}), 400
+            return jsonify({"success": False, "message": "Email et mot de passe requis!"}), 400
 
-        user = mongo.db.users.find_one({"email": email})
+        # Check patients collection
+        user = mongo.db.patients.find_one({"email": email})
+        role = "patient" if user else None
+
+        # If not found in patients, check medecins collection
         if not user:
-            return jsonify({"success": False, "message": "User not found!"}), 404
+            user = mongo.db.medecins.find_one({"email": email})
+            role = "medecin" if user else None  # Return "medecin" instead of "doctor"
 
+        if not user:
+            return jsonify({"success": False, "message": "Utilisateur non trouvé!"}), 404
+
+        # Compare password in plain text (not recommended for production)
         if user['password'] != password:
-            app.logger.info(f"Login failed for {email}: Password mismatch - Provided: {password}, Stored: {user['password']}")
-            return jsonify({"success": False, "message": "Wrong credentials!"}), 401
+            return jsonify({"success": False, "message": "Identifiants incorrects!"}), 401
 
+        # Prepare user data based on role
         user_data = {
             "id": str(user['_id']),
             "email": user['email'],
-            "role": user['role'],
+            "role": role,
             "firstName": user['firstName'],
             "lastName": user['lastName'],
-            "dateOfBirth": user.get('dateOfBirth', ''),
-            "address": user.get('address', ''),
-            "phone": user.get('phone', ''),
-            "createdAt": user['createdAt']
+            "patientId": str(user['_id'])  # Ajouté pour cohérence avec le front
         }
 
-        user_details = {}
-        if user['role'] == 'patient':
-            patient = mongo.db.patients.find_one({"userId": user['_id']})
-            if patient:
-                user_details = {
-                    "patientId": str(patient['_id']),
-                    "firstName": patient.get('firstName', ''),
-                    "lastName": patient.get('lastName', '')
-                }
-        else:  # doctor
-            doctor = mongo.db.medecins.find_one({"userId": user['_id']})
-            if doctor:
-                user_details = {
-                    "doctorId": str(doctor['_id']),
-                    "firstName": doctor.get('firstName', ''),
-                    "lastName": doctor.get('lastName', ''),
-                    "specialty": doctor.get('specialty', 'General')
-                }
+        # Add role-specific fields
+        if role == "patient":
+            user_data["dateOfBirth"] = user.get('dateOfBirth', '')
+            user_data["address"] = user.get('address', '')
+            user_data["phone"] = user.get('phone', '')
+            user_data["createdAt"] = user.get('createdAt', '')
+        elif role == "medecin":
+            user_data["specialite"] = user.get('specialite', '')
+            user_data["note"] = user.get('note', '')
+            user_data["propos"] = user.get('propos', '')
+            user_data["telephone"] = user.get('telephone', '')
+            user_data["image"] = user.get('image', '')
 
-        app.logger.info(f"User logged in: {email}, role: {user['role']}, id: {str(user['_id'])}")
         return jsonify({
             "success": True,
-            "message": "Login successful!",
-            "user": {**user_data, **user_details}
+            "message": "Connexion réussie!",
+            "user": user_data
         }), 200
+
     except Exception as e:
-        app.logger.error(f"Error logging in user: {str(e)}")
-        return jsonify({"success": False, "message": "Internal server error"}), 500
+        return jsonify({"success": False, "message": "Erreur serveur"}), 500
+
     
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

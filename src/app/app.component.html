@@ -9,39 +9,63 @@
       </ion-header>
       <ion-content>
         <ion-list>
+          <!-- Items for all users -->
           <ion-item routerLink="/home" routerLinkActive="selected">
             <ion-icon name="home-outline" slot="start"></ion-icon>
             <ion-label>Accueil</ion-label>
           </ion-item>
-          
-          <ion-item routerLink="/medical-history" routerLinkActive="selected">
-            <ion-icon name="medical-outline" slot="start"></ion-icon>
-            <ion-label>Historique Médical</ion-label>
-          </ion-item>
-          
-          <ion-item routerLink="/medical-documents" routerLinkActive="selected">
-            <ion-icon name="document-text-outline" slot="start"></ion-icon>
-            <ion-label>Documents Médicaux</ion-label>
-          </ion-item>
-          
-          <ion-item routerLink="/doctors" routerLinkActive="selected">
-            <ion-icon name="medkit-outline" slot="start"></ion-icon>
-            <ion-label>Médecins</ion-label>
-          </ion-item>
-          
-          <ion-item routerLink="/login" routerLinkActive="selected">
+
+          <!-- Patient-specific items -->
+          <ng-container *ngIf="isPatient">
+            <ion-item [routerLink]="userId ? ['/medical-history', userId] : '/login'" routerLinkActive="selected">
+              <ion-icon name="medical-outline" slot="start"></ion-icon>
+              <ion-label>Historique Médical</ion-label>
+            </ion-item>
+            <ion-item [routerLink]="userId ? ['/medical-document', userId] : '/login'" routerLinkActive="selected">
+              <ion-icon name="document-text-outline" slot="start"></ion-icon>
+              <ion-label>Documents Médicaux</ion-label>
+            </ion-item>
+            <ion-item [routerLink]="userId ? ['/patient-profile', userId] : '/login'" routerLinkActive="selected">
+              <ion-icon name="person-outline" slot="start"></ion-icon>
+              <ion-label>Mon Profil</ion-label>
+            </ion-item>
+          </ng-container>
+
+          <!-- Doctor-specific items -->
+          <ng-container *ngIf="isDoctor">
+            <ion-item [routerLink]="userId ? ['/doctor-prof', userId] : '/login'" routerLinkActive="selected">
+              <ion-icon name="person-outline" slot="start"></ion-icon>
+              <ion-label>Mon Profil</ion-label>
+            </ion-item>
+            <ion-item routerLink="/patients-list" routerLinkActive="selected">
+              <ion-icon name="people-outline" slot="start"></ion-icon>
+              <ion-label>Liste des Patients</ion-label>
+            </ion-item>
+            <ion-item routerLink="/appointments" routerLinkActive="selected">
+              <ion-icon name="calendar-outline" slot="start"></ion-icon>
+              <ion-label>Rendez-vous</ion-label>
+            </ion-item>
+          </ng-container>
+
+          <!-- Login for unauthenticated users -->
+          <ion-item *ngIf="!isAuthenticated" routerLink="/login" routerLinkActive="selected">
             <ion-icon name="log-in-outline" slot="start"></ion-icon>
             <ion-label>Connexion</ion-label>
           </ion-item>
+
+          <!-- Logout for authenticated users -->
+          <ion-item *ngIf="isAuthenticated" (click)="logout()" button routerLinkActive="selected">
+            <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            <ion-label>Déconnexion</ion-label>
+          </ion-item>
         </ion-list>
-        
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
   
-   <ion-header *ngIf="!(router.url.includes('/patient') || router.url.includes('/doctor-profile')  || router.url.includes('/register')  || router.url.includes('/login')    )"   class="purple-tab-bar">
-    <ion-toolbar >
+  <ion-header *ngIf="!(router.url.includes('/patient') || router.url.includes('/medical-history') || router.url.includes('/medical-document')  || router.url.includes('/doctor-profile') || router.url.includes('/register') || router.url.includes('/login'))" class="purple-tab-bar">
+    <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
@@ -49,25 +73,22 @@
     </ion-toolbar>
   </ion-header>
   
-      
-<ion-footer class="purple-tab-bar">
-  <ion-toolbar>
-    <ion-row routerLink="/home" class="ion-justify-content-around">
-      <ion-col class="tab-item" size="3">
-        <ion-icon name="home"></ion-icon>
-
-      </ion-col>
-      <ion-col class="tab-item" size="3">
-        <ion-icon name="apps-outline"></ion-icon>
-        
-      </ion-col>
-      <ion-col routerLink="/home" class="tab-item" size="3">
-        <ion-icon name="search"></ion-icon>
-      </ion-col>
-      <ion-col  routerLink="/patient" class="tab-item" size="3">
-        <ion-icon name="person"></ion-icon>
-      </ion-col>
-    </ion-row>
-  </ion-toolbar>
-</ion-footer>
+  <ion-footer class="purple-tab-bar">
+    <ion-toolbar>
+      <ion-row class="ion-justify-content-around">
+        <ion-col class="tab-item" size="3" routerLink="/home">
+          <ion-icon name="home"></ion-icon>
+        </ion-col>
+        <ion-col class="tab-item" size="3" routerLink="/home">
+          <ion-icon name="apps-outline"></ion-icon>
+        </ion-col>
+        <ion-col class="tab-item" size="3" routerLink="/home">
+          <ion-icon name="search"></ion-icon>
+        </ion-col>
+        <ion-col class="tab-item" size="3" [routerLink]="userId ? (isPatient ? ['/patient-profile', userId] : ['/doctor-prof', userId]) : '/login'">
+          <ion-icon name="person"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-toolbar>
+  </ion-footer>
 </ion-app>

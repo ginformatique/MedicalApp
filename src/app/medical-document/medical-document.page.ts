@@ -32,7 +32,8 @@ export class MedicalDocumentPage implements OnInit {
     private navCtrl: NavController,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private navController: NavController
   ) {}
 
   async ngOnInit() {
@@ -44,6 +45,12 @@ export class MedicalDocumentPage implements OnInit {
     }
     await this.loadDocuments();
   }
+
+  
+  goBack() {
+    this.navController.back();
+  }
+
 
   async loadDocuments() {
     this.isLoading = true;

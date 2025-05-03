@@ -1,0 +1,130 @@
+.header-toolbar {
+  --background: #605eea;
+  --color: #ffffff;
+}
+
+ion-icon {
+  font-size: 18px;
+  color: var(--ion-color-primary);
+  color: #605eea;
+}
+/* Ensure back arrow is visible */
+ion-button ion-icon[name="arrow-back"] {
+  color: #ffffff;
+  font-size: 24px;
+}
+
+/* Notification badge styling */
+ion-badge {
+  --background: #ffffff; /* Changed to white as requested */
+  --color: #333; /* Dark text for contrast against white background */
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+ion-content {
+  --background: #f7f9fc;
+}
+
+.profile-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  animation: slideUp 0.4s ease-out;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 12px;
+  border: 2px solid #605eea;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 1.6rem;
+  color: #333;
+  margin: 8px 0;
+}
+
+.profile-detail {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 4px 0;
+}
+
+.profile-detail:last-child {
+  color: #605eea;
+  font-weight: 500;
+}
+
+.info-card {
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-card ion-card-header {
+  background: #efedfe;
+  --color: #333;
+}
+
+.info-card ion-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+ion-item {
+  --background: #ffffff;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+ion-icon {
+  color: white;
+}
+
+ion-label {
+  color: #333;
+}
+
+ion-label h3 {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+ion-label p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.multi-line {
+  line-height: 1.4;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

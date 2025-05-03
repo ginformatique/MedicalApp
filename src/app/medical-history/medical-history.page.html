@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Historique Médical</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="appointments.length === 0">
+    <ion-card-content>
+      <p>Aucun rendez-vous trouvé.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngFor="let appointment of appointments">
+    <ion-card-header>
+      <ion-card-title>{{ appointment.date }} à {{ appointment.time }}</ion-card-title>
+      <ion-card-subtitle>{{ appointment.doctorName }} ({{ appointment.specialite }})</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Statut: {{ appointment.status }}</p>
+      <ion-button 
+        color="danger" 
+        size="small" 
+        *ngIf="appointment.status !== 'Annulé'"
+        (click)="cancelAppointment(appointment.id)">
+        Annuler
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

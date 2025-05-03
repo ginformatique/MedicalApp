@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Profil Patient</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="!isEditMode" (click)="toggleEditMode()">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isEditMode" (click)="saveChanges()">
+        <ion-icon name="save-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Profile Section -->
+  <div class="profile-container" *ngIf="user">
+    <ion-avatar class="profile-image" (click)="isEditMode && selectProfileImage()">
+      <img [src]="profileImageUrl || 'assets/IMG_0114.JPG'" alt="Patient Photo">
+    </ion-avatar>
+    <input type="file" accept="image/*" style="display: none;" #fileInput (change)="onFileSelected($event)">
+    <h2 class="profile-name" *ngIf="!isEditMode">{{ user.firstName }} {{ user.lastName }}</h2>
+    <ion-item *ngIf="isEditMode">
+      <ion-input label="Prénom" [(ngModel)]="user.firstName"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="isEditMode">
+      <ion-input label="Nom" [(ngModel)]="user.lastName"></ion-input>
+    </ion-item>
+    <p class="profile-detail" *ngIf="user.dateOfBirth && !isEditMode">Né(e) le {{ user.dateOfBirth | date:'dd/MM/yyyy' }}</p>
+    <ion-item *ngIf="isEditMode">
+      <ion-datetime label="Date de naissance" [(ngModel)]="user.dateOfBirth" displayFormat="DD/MM/YYYY"></ion-datetime>
+    </ion-item>
+  </div>
+
+  <!-- Contact Information -->
+  <ion-card class="info-card" *ngIf="user">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+        Informations personnelles
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none" *ngIf="!isEditMode && user.phone">
+        <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>{{ user.phone }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="isEditMode">
+        <ion-input label="Téléphone" [(ngModel)]="user.phone"></ion-input>
+      </ion-item>
+      
+      <ion-item lines="none" *ngIf="!isEditMode">
+        <ion-icon name="mail-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>{{ user.email }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="isEditMode">
+        <ion-input label="Email" [(ngModel)]="user.email" type="email"></ion-input>
+      </ion-item>
+      
+      <ion-item lines="none" *ngIf="!isEditMode && user.address">
+        <ion-icon name="home-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>{{ user.address }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="isEditMode">
+        <ion-input label="Adresse" [(ngModel)]="user.address"></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Placeholder for future notifications section -->
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="notifications-outline" slot="start"></ion-icon>
+        Notifications
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label class="ion-text-center">
+          <ion-icon name="notifications-off-outline" size="large"></ion-icon>
+          <p>Aucune notification</p>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

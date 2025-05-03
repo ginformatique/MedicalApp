@@ -1,0 +1,161 @@
+/* Variables de couleur du thème */
+:root {
+  --primary-color: #605eea;
+  --primary-light: #efedfe;
+  --text-dark: #333333;
+  --text-medium: #666666;
+  --background-light: #f7f9fc;
+  --white: #ffffff;
+  --danger: #e25c5c;
+}
+
+/* Style de l'en-tête */
+ion-toolbar {
+  --background: #605eea;
+  --color: #ffffff;
+  box-shadow: 0 2px 10px rgba(96, 94, 234, 0.2);
+}
+
+ion-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+/* Style du contenu principal */
+ion-content {
+  --background: #f7f9fc;
+}
+
+/* Style des cartes d'historique */
+ion-card {
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  animation: slideUp 0.4s ease-out;
+}
+
+ion-card:nth-child(odd) {
+  --background: #ffffff;
+}
+
+ion-card:nth-child(even) {
+  --background: #ffffff;
+}
+
+ion-card-header {
+  background-color: #efedfe;
+  padding: 16px;
+}
+
+ion-card-title {
+  color: #605eea;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+ion-card-subtitle {
+  color: #666666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: none;
+}
+
+ion-card-content {
+  padding: 16px;
+  line-height: 1.5;
+}
+
+ion-card-content p {
+  color: #333333;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+/* Message lorsqu'aucun rendez-vous n'est trouvé */
+ion-card:first-child ion-card-content p {
+  text-align: center;
+  color: #666666;
+  font-size: 1rem;
+  padding: 20px 0;
+}
+
+/* Style du bouton d'annulation */
+ion-button[color="danger"] {
+  --background: #e25c5c;
+  --background-activated: #c94a4a;
+  --background-focused: #c94a4a;
+  --color: #ffffff;
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: none;
+  --border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(226, 92, 92, 0.2);
+  height: 36px;
+}
+
+ion-button[color="danger"]:hover {
+  --background: #d14545;
+  box-shadow: 0 2px 8px rgba(226, 92, 92, 0.4);
+}
+
+/* Animation d'entrée */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation des cartes lors du survol */
+@media (hover: hover) {
+  ion-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  ion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Styles pour les différents statuts */
+ion-card-content p:contains("Statut: Confirmé") {
+  color: #28a745;
+  font-weight: 500;
+}
+
+ion-card-content p:contains("Statut: En attente") {
+  color: #ffc107;
+  font-weight: 500;
+}
+
+ion-card-content p:contains("Statut: Annulé") {
+  color: #e25c5c;
+  font-weight: 500;
+}
+
+/* Media queries pour les écrans mobiles */
+@media (max-width: 576px) {
+  ion-card {
+    margin: 12px 0;
+  }
+  
+  ion-card-title {
+    font-size: 1.1rem;
+  }
+  
+  ion-card-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  ion-card-content p {
+    font-size: 0.9rem;
+  }
+}
