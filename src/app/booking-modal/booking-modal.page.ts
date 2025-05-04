@@ -54,7 +54,7 @@ export class BookingModalPage implements OnInit {
     if (this.currentPatientId) {
       this.loadPatientAppointments();
     } else {
-      console.error('Patient ID is missing');
+      console.error('Seuls les patients peuvent réserver');
     }
   }
 

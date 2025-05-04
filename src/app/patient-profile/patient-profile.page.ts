@@ -1,7 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService, Patient } from '../auth/auth.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+import { NotificationService } from '../services/notification.service';
+
+interface Notification {
+  _id: string;
+  patientId: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 @Component({
   selector: 'app-patient-profile',
@@ -14,19 +25,20 @@ export class PatientProfilePage implements OnInit {
   isEditMode: boolean = false;
   profileImageUrl: string | null = null;
   originalUser: Patient | null = null;
-  selectedFile: File | null = null;
-
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  notifications: Notification[] = [];
+  isLoadingNotifications: boolean = false;
 
   constructor(
     private authService: AuthService,
     private navController: NavController,
     private alertController: AlertController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
     this.loadUserProfile();
+    this.loadNotifications();
   }
 
   goBack() {
@@ -34,7 +46,7 @@ export class PatientProfilePage implements OnInit {
   }
 
   toggleEditMode() {
-    if (!this.isEditMode) {
+    if (!this.isEditMode && this.user) {
       // Store original user data in case of cancel
       this.originalUser = { ...this.user } as Patient;
     }
@@ -45,39 +57,24 @@ export class PatientProfilePage implements OnInit {
     if (!this.user) return;
 
     try {
-      // Update user profile
-      await this.authService.updateUserProfile(this.user).toPromise();
-      
-      // If there's a new profile image, upload it
-      if (this.selectedFile) {
-        await this.authService.uploadProfileImage(this.selectedFile).toPromise();
-        // Update profileImageUrl to reflect new image
-        this.profileImageUrl = `${this.authService.getImageBaseUrl()}/patients/${this.user.id}/image?ts=${Date.now()}`;
-      }
+      // Prepare data to update
+      const updatedData: Partial<Patient> = {
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        phone: this.user.phone,
+        email: this.user.email,
+        address: this.user.address
+      };
 
+      // Update user profile
+      await this.authService.updateUserProfile(updatedData).toPromise();
+      
       this.isEditMode = false;
-      this.selectedFile = null;
       this.showAlert('Succès', 'Profil mis à jour avec succès.');
+      this.refreshNotifications(); // Refresh notifications in case profile update triggers any
     } catch (error) {
       console.error('Error updating profile:', error);
       this.showAlert('Erreur', 'Une erreur est survenue lors de la mise à jour du profil.');
-    }
-  }
-
-  selectProfileImage() {
-    this.fileInput.nativeElement.click();
-  }
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      this.selectedFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.profileImageUrl = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
     }
   }
 
@@ -101,6 +98,44 @@ export class PatientProfilePage implements OnInit {
         this.navController.navigateRoot('/login', { replaceUrl: true });
       }
     });
+  }
+
+  private loadNotifications() {
+    const patientId = this.authService.getPatientId();
+    if (patientId) {
+      this.isLoadingNotifications = true;
+      this.notificationService.getPatientNotifications(patientId).subscribe(
+        (notifications: Notification[]) => {
+          this.notifications = notifications || [];
+          console.log('Notifications loaded:', this.notifications);
+          this.isLoadingNotifications = false;
+        },
+        (error: any) => {
+          console.error('Error fetching notifications:', error);
+          this.notifications = [];
+          this.isLoadingNotifications = false;
+          this.showAlert('Erreur', 'Échec du chargement des notifications.');
+        }
+      );
+    }
+  }
+
+  async markAsRead(notificationId: string) {
+    try {
+      await this.notificationService.markAsRead(notificationId).toPromise();
+      // Update the notification's isRead status locally
+      const notification = this.notifications.find(n => n._id === notificationId);
+      if (notification) {
+        notification.isRead = true;
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      this.showAlert('Erreur', 'Échec du marquage de la notification comme lue.');
+    }
+  }
+
+  refreshNotifications() {
+    this.loadNotifications();
   }
 
   async logout() {
@@ -130,5 +165,12 @@ export class PatientProfilePage implements OnInit {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+
+  getUnreadNotificationCount(): number {
+    const count = this.notifications.filter(n => !n.isRead).length;
+    console.log('Unread count:', count);
+    return count;
   }
 }

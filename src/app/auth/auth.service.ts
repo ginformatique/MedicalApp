@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 export interface Patient {
+  password: any;
   id: string;
   email: string;
   role: string;
@@ -119,7 +120,7 @@ export class AuthService {
       ...updatedData
     };
 
-    return this.http.put<UpdateProfileResponse>(`${this.apiUrl}/patients/${user.id}`, payload).pipe(
+    return this.http.patch<UpdateProfileResponse>(`${this.apiUrl}/patients/${user.id}`, payload).pipe(
       tap((response) => {
         console.log('Update profile API response:', response);
         if (response.user) {

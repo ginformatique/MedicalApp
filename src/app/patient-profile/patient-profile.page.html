@@ -13,6 +13,12 @@
       <ion-button *ngIf="isEditMode" (click)="saveChanges()">
         <ion-icon name="save-outline"></ion-icon>
       </ion-button>
+      <ion-button (click)="refreshNotifications()">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <ion-badge color="warning" *ngIf="getUnreadNotificationCount() > 0" class="notification-badge">
+          {{ getUnreadNotificationCount() }}
+        </ion-badge>
+      </ion-button>
       <ion-button (click)="logout()">
         <ion-icon name="log-out-outline"></ion-icon>
       </ion-button>
@@ -23,20 +29,15 @@
 <ion-content class="ion-padding">
   <!-- Profile Section -->
   <div class="profile-container" *ngIf="user">
-    <ion-avatar class="profile-image" (click)="isEditMode && selectProfileImage()">
-      <img [src]="profileImageUrl || 'assets/IMG_0114.JPG'" alt="Patient Photo">
+    <ion-avatar class="profile-image">
+      <img [src]="'assets/IMG_0114.JPG'" alt="Patient Photo">
     </ion-avatar>
-    <input type="file" accept="image/*" style="display: none;" #fileInput (change)="onFileSelected($event)">
     <h2 class="profile-name" *ngIf="!isEditMode">{{ user.firstName }} {{ user.lastName }}</h2>
     <ion-item *ngIf="isEditMode">
       <ion-input label="Prénom" [(ngModel)]="user.firstName"></ion-input>
     </ion-item>
     <ion-item *ngIf="isEditMode">
       <ion-input label="Nom" [(ngModel)]="user.lastName"></ion-input>
-    </ion-item>
-    <p class="profile-detail" *ngIf="user.dateOfBirth && !isEditMode">Né(e) le {{ user.dateOfBirth | date:'dd/MM/yyyy' }}</p>
-    <ion-item *ngIf="isEditMode">
-      <ion-datetime label="Date de naissance" [(ngModel)]="user.dateOfBirth" displayFormat="DD/MM/YYYY"></ion-datetime>
     </ion-item>
   </div>
 
@@ -75,7 +76,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Placeholder for future notifications section -->
+  <!-- Notifications Section -->
   <ion-card class="info-card">
     <ion-card-header>
       <ion-card-title>
@@ -84,12 +85,39 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-item lines="none">
-        <ion-label class="ion-text-center">
-          <ion-icon name="notifications-off-outline" size="large"></ion-icon>
-          <p>Aucune notification</p>
-        </ion-label>
-      </ion-item>
+      <ion-spinner *ngIf="isLoadingNotifications" name="crescent" class="ion-text-center"></ion-spinner>
+      <ion-list *ngIf="!isLoadingNotifications && notifications.length > 0; else noNotifications">
+        <ion-item *ngFor="let notification of notifications" 
+                 [class.unread]="!notification.isRead"
+                 button
+                 (click)="markAsRead(notification._id)">
+          <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3 [ngStyle]="{'font-weight': notification.isRead ? 'normal' : 'bold'}">{{ notification.message }}</h3>
+            <p>{{ notification.createdAt | date:'dd MMM yyyy, HH:mm' }}</p>
+          </ion-label>
+          <ion-icon *ngIf="!notification.isRead" name="ellipse" slot="end" color="primary"></ion-icon>
+        </ion-item>
+      </ion-list>
+      <ng-template #noNotifications>
+        <ion-item lines="none" *ngIf="!isLoadingNotifications">
+          <ion-label class="ion-text-center">
+            <ion-icon name="notifications-off-outline" size="large"></ion-icon>
+            <p>Aucune notification</p>
+          </ion-label>
+        </ion-item>
+      </ng-template>
     </ion-card-content>
   </ion-card>
 </ion-content>
+
+<style>
+.notification-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+</style>

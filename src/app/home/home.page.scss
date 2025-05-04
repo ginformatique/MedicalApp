@@ -1,30 +1,87 @@
-// Variables globales
+// Variables et thème créatif
 @use 'sass:color';
-$primary-color: #6665DD;
-$background-color: #f7f9fc;
-$text-color: #333333;
-$light-gray: #f0f0f0;
-$border-radius: 10px;
-$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+@use 'sass:math';
 
-// Style général
-ion-content {
-  --background: #{$background-color};
-  --padding-start: 15px;
-  --padding-end: 15px;
-  --padding-top: 10px;
-  --padding-bottom: 10px;
+// Palette de couleurs créative
+$primary-color: #6665DD;
+$secondary-color: #8A4FFF;
+$accent-color: #FF5E84;
+$gradient-start: #6665DD;
+$gradient-end: #4A8FFF;
+$background-color: #f7f9fc;
+$card-bg: #ffffff;
+$text-color: #333333;
+$text-light: #7E8299;
+$rating-color: #FFB800;
+$success-color: #00D68F;
+
+// Espacement et dimensions
+$border-radius-sm: 8px;
+$border-radius: 12px;
+$border-radius-lg: 20px;
+$border-radius-xl: 28px;
+$box-shadow: 0 10px 20px rgba(106, 101, 235, 0.08);
+$box-shadow-hover: 0 15px 25px rgba(106, 101, 235, 0.12);
+
+// Polices
+$font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+
+
+.gif-section {
+  margin-top: 61px;
+  margin-bottom: 5px;
 }
 
-// Section Carousel - correctifs pour les images
+.gif-section img {
+  width: 100%;
+  height: auto;
+  max-height: 50%; /* Adjust based on your GIF's aspect ratio */
+  object-fit: cover; /* Ensures the GIF fits nicely */
+}
+
+
+// Style général avec thème moderne
+ion-content {
+  --background: #{$background-color};
+  --padding-start: 18px;
+  --padding-end: 18px;
+  --padding-top: 12px;
+  --padding-bottom: 20px;
+  font-family: $font-family;
+  
+  // Effet de dégradé subtil en arrière-plan
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 320px;
+    background: linear-gradient(180deg, rgba($gradient-start, 0.05) 0%, rgba($gradient-end, 0) 100%);
+    z-index: -1;
+  }
+}
+
+// Section Carousel - Design créatif
 .ad-section {
   position: relative;
-  margin-bottom: 20px;
-  margin-top: 66px;
-  height: 200px;
-  border-radius: $border-radius;
+  margin: 66px 0 30px;
+  height: 220px;
+  border-radius: $border-radius-lg;
   overflow: hidden;
   box-shadow: $box-shadow;
+  
+  // Effet de cadre néon
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: $border-radius-lg;
+    border: 1px solid rgba($primary-color, 0.3);
+    box-shadow: 0 0 20px rgba($primary-color, 0.1);
+    pointer-events: none;
+    z-index: 1;
+  }
   
   .carousel {
     width: 100%;
@@ -42,95 +99,161 @@ ion-content {
         width: 100%;
         height: 100%;
         opacity: 0;
-        transition: opacity 0.5s ease;
+        transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+        transform: translateX(30px);
         
         &:first-child {
-          opacity: 1; // Afficher la première image par défaut
+          opacity: 1;
+          transform: translateX(0);
         }
         
         &.active {
           opacity: 1;
+          transform: translateX(0);
+        }
+        
+        &.prev {
+          transform: translateX(-30px);
         }
         
         img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          display: block; // Forcer l'affichage en block
-          max-width: 100%; // S'assurer que l'image ne déborde pas
-          background-color: #e0e0e0; // Couleur de fond en attendant le chargement
+          display: block;
+          max-width: 100%;
+          transition: filter 0.3s ease;
+          filter: saturate(1.1) contrast(1.05);
         }
       }
     }
   }
   
+  // Contrôles stylisés
   .carousel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.9);
     border: none;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     color: $primary-color;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
     z-index: 10;
     cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
     
     &.prev {
-      left: 10px;
+      left: 15px;
     }
     
     &.next {
-      right: 10px;
+      right: 15px;
     }
+  }
+  
+  // Afficher les contrôles au survol
+  &:hover .carousel-control {
+    opacity: 1;
+  }
+  
+  // Indicateurs de carousel créatifs
+  .carousel-indicators {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
     
-    &:hover {
-      background: rgba(255, 255, 255, 0.9);
+    .indicator {
+      width: 30px;
+      height: 4px;
+      border-radius: 2px;
+      background-color: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      
+      &.active {
+        background-color: white;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+      }
     }
   }
 }
 
-// Section Recherche
+// Section Recherche - Design créatif
 .search-section {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   
   .rounded-searchbar {
-    --border-radius: 25px;
-    --background: white;
+    --border-radius: #{$border-radius-xl};
+    --background: #{$card-bg};
     --color: #{$text-color};
-    --placeholder-color: #888;
+    --placeholder-color: #{$text-light};
     --icon-color: #{$primary-color};
     --box-shadow: #{$box-shadow};
-    padding: 0;
+    padding: 2px;
+    height: 54px;
+    overflow: hidden;
+    
+    // Effet de bordure dégradée
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: $border-radius-xl;
+      padding: 2px;
+      background: linear-gradient(120deg, $gradient-start, $gradient-end);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    &.ion-focused::before,
+    &:hover::before {
+      opacity: 1;
+    }
     
     ion-icon {
       color: $primary-color;
+      font-size: 22px;
+    }
+    
+    .searchbar-input {
+      font-weight: 400;
+      letter-spacing: 0.2px;
     }
   }
 }
 
-// Container de recherche
+// Container de recherche - Design corrigé
 .search-container {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 24px;
+  position: relative;
   
-  select, input {
+  select {
+    flex: 1;
     height: 40px;
-    border-radius: 20px;
+    border-radius: 25px;
     padding: 0 15px;
     border: 1px solid #e1e5eb;
-    background-color: white;
+    background-color: $card-bg;
     font-size: 14px;
     color: $text-color;
     outline: none;
-    box-shadow: $box-shadow;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -138,89 +261,206 @@ ion-content {
     background-repeat: no-repeat;
     background-position: right 15px center;
     background-size: 15px;
-  }
-  
-  select {
-    flex: 1;
     cursor: pointer;
-  }
-  
-  input {
-    flex: 1.5;
-    
-    &::placeholder {
-      color: #aaa;
-    }
+    box-shadow: none; // Suppression de l'ombre
   }
 }
 
-// Liste des médecins - correctifs pour les images des avatars
+// Liste des médecins - Design créatif
 ion-list {
   background: transparent;
   padding: 0;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   
   ion-list-header {
     padding-left: 0;
     padding-right: 0;
+    margin-bottom: 10px;
     
     ion-label {
-      font-size: 16px;
-      font-weight: 600;
-      color: $text-color;
-      margin: 0 0 10px 0;
+      position: relative;
+      font-size: 20px;
+      font-weight: 700;
+      color: $secondary-color;
+      margin: 0 0 15px 0;
+      display: inline-block;
+      
+      // Effet de soulignement créatif
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 40px;
+        height: 3px;
+        background: linear-gradient(90deg, $gradient-start, $gradient-end);
+        border-radius: 3px;
+      }
+      
+      // Effet de texte créatif
+      span {
+        background: linear-gradient(90deg, $primary-color, $secondary-color);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
     }
   }
   
+  // Card de médecin
   ion-item {
-    --padding-start: 15px;
-    --padding-end: 15px;
+    --padding-start: 16px;
+    --padding-end: 16px;
     --inner-padding-end: 10px;
-    --background: white;
-    --border-color: #{$light-gray};
-    margin-bottom: 10px;
+    --background: #{$card-bg};
+    --border-color: transparent;
+    margin-bottom: 16px;
     border-radius: $border-radius;
     box-shadow: $box-shadow;
+    overflow: visible;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     
     &:last-child {
       margin-bottom: 0;
     }
     
+    // Effet au survol
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: $box-shadow-hover;
+    }
+    
+    // Avatar créatif
     ion-avatar {
-      width: 50px;
-      height: 50px;
-      margin-right: 15px;
-      background-color: #e0e0e0; // Fond en attendant le chargement de l'image
-      overflow: hidden; // S'assurer que les images ne débordent pas
+      width: 60px;
+      height: 60px;
+      margin-right: 16px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      
+      // Bordure dégradée animée
+      &::before {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          $gradient-start,
+          $secondary-color,
+          $gradient-end,
+          $primary-color,
+          $gradient-start
+        );
+        z-index: -1;
+        animation: rotate 4s linear infinite;
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: $card-bg;
+        z-index: -1;
+        margin: 2px;
+      }
       
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        display: block; // Forcer l'affichage en block
+        display: block;
+        transition: transform 0.5s ease;
       }
     }
     
+    // Contenu
     ion-label {
       h2 {
-        font-size: 16px;
-        font-weight: 500;
+        font-size: 17px;
+        font-weight: 600;
         color: $text-color;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
       }
       
       p {
         font-size: 14px;
         color: $primary-color;
-        margin: 0;
+        margin: 4px 0;
+        font-weight: 500;
       }
     }
     
+    // Élément cliquable
     &[button] {
       cursor: pointer;
+      position: relative;
       
-      &:hover {
-        --background: #{lighten($background-color, 2%)};
+      // Flèche stylisée
+      &::after {
+        content: '';
+        position: absolute; 
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        background-color: rgba($primary-color, 0.1);
+        border-radius: 50%;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236665DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='9 18 15 12 9 6'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px;
+        transition: all 0.3s ease;
+      }
+      
+      &:hover::after {
+        background-color: rgba($primary-color, 0.2);
+        transform: translateY(-50%) translateX(3px);
+      }
+    }
+  }
+  
+  // Badge de statut (disponible / occupé)
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+    
+    &.available {
+      background-color: rgba($success-color, 0.1);
+      color: $success-color;
+      
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: $success-color;
+        border-radius: 50%;
+        margin-right: 5px;
+        animation: pulse 2s infinite;
+      }
+    }
+    
+    &.busy {
+      background-color: rgba($accent-color, 0.1);
+      color: $accent-color;
+      
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: $accent-color;
+        border-radius: 50%;
+        margin-right: 5px;
       }
     }
   }
@@ -228,12 +468,150 @@ ion-list {
   // Style pour le spinner de chargement
   ion-spinner {
     color: $primary-color;
-    margin-right: 10px;
+    margin-right: 12px;
+    width: 24px;
+    height: 24px;
   }
+  
+  // Message d'aucun résultat
+  ion-item:has(ion-label:contains("Aucun médecin trouvé")) {
+    --background: rgba(#{red($primary-color)}, #{green($primary-color)}, #{blue($primary-color)}, 0.05);
+    justify-content: center;
+    min-height: 100px;
+    
+    ion-label {
+      color: $text-light;
+      text-align: center;
+      font-weight: 500;
+      
+      &::before {
+        content: '🔍';
+        display: block;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
+// Style créatif pour les étoiles
+.rating {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: $text-light;
+  margin-top: 6px;
+
+  .star {
+    color: $rating-color;
+    font-size: 16px;
+    margin-right: 2px;
+    position: relative;
+    
+    // Animation pour les étoiles pleines
+    &:nth-child(1) { animation: bounce 2s infinite 0.1s; }
+    &:nth-child(2) { animation: bounce 2s infinite 0.2s; }
+    &:nth-child(3) { animation: bounce 2s infinite 0.3s; }
+    &:nth-child(4) { animation: bounce 2s infinite 0.4s; }
+    &:nth-child(5) { animation: bounce 2s infinite 0.5s; }
+  }
+  
+  span:last-child {
+    margin-left: 6px;
+    font-weight: 500;
+  }
+}
+
+// Animations
+@keyframes bounce {
+  0%, 20%, 40%, 60%, 80%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 // Fix pour éviter que les images ne disparaissent pendant les transitions
 img {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+// Ajout d'une ombre aux boutons
+ion-button {
+  --box-shadow: 0 8px 16px rgba(102, 101, 221, 0.15);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  
+  // Effet de reflet
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg) translateY(-100%);
+    z-index: -1;
+    transition: all 0.7s ease;
+  }
+  
+  &:hover::after {
+    transform: rotate(45deg) translateY(100%);
+  }
+}
+
+// Effet flottant pour certains éléments
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+// Media queries pour la responsivité
+@media (max-width: 576px) {
+  .search-container {
+    gap: 8px; // Réduire l'espacement pour mieux s'adapter
+    
+    select {
+      width: 48%; // Ajuster la largeur pour qu'ils restent côte à côte
+      font-size: 12px; // Réduire la taille de la police pour mieux s'adapter
+      padding: 0 10px; // Réduire le padding pour plus d'espace
+    }
+  }
+  
+  ion-item {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    
+    ion-avatar {
+      width: 50px;
+      height: 50px;
+    }
+  }
+  
+  .ad-section {
+    height: 180px;
+  }
 }
