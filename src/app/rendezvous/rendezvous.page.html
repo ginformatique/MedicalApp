@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mes Rendez-vous</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Section pour les rendez-vous en attente -->
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Rendez-vous en Attente</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let appointment of pendingAppointments">
+      <ion-label>
+        <h2>{{ appointment.patientName }}</h2>
+        <p>Date: {{ appointment.date }}</p>
+        <p>Heure: {{ appointment.heure }}</p>
+        <p>Statut: {{ appointment.status }}</p>
+      </ion-label>
+      <ion-button slot="end" (click)="acceptAppointment(appointment.id)" color="success">Accepter</ion-button>
+      <ion-button slot="end" (click)="rejectAppointment(appointment.id)" color="danger">Rejeter</ion-button>
+    </ion-item>
+    <ion-text *ngIf="!pendingAppointments.length">
+      <p class="ion-padding">Aucun rendez-vous en attente trouvé.</p>
+    </ion-text>
+  </ion-list>
+
+  <!-- Section pour les rendez-vous confirmés -->
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Rendez-vous Confirmés</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let appointment of confirmedAppointments">
+      <ion-label>
+        <h2>{{ appointment.patientName }}</h2>
+        <p>Date: {{ appointment.date }}</p>
+        <p>Heure: {{ appointment.heure }}</p>
+        <p>Statut: {{ appointment.status }}</p>
+      </ion-label>
+      <ion-button slot="end" (click)="goToConsultation(appointment)" color="primary">Consulter</ion-button>
+    </ion-item>
+    <ion-text *ngIf="!confirmedAppointments.length">
+      <p class="ion-padding">Aucun rendez-vous confirmé trouvé.</p>
+    </ion-text>
+  </ion-list>
+
+  <!-- Section pour les rendez-vous rejetés -->
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Rendez-vous Rejetés</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let appointment of rejectedAppointments">
+      <ion-label>
+        <h2>{{ appointment.patientName }}</h2>
+        <p>Date: {{ appointment.date }}</p>
+        <p>Heure: {{ appointment.heure }}</p>
+        <p>Statut: {{ appointment.status }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-text *ngIf="!rejectedAppointments.length">
+      <p class="ion-padding">Aucun rendez-vous rejeté trouvé.</p>
+    </ion-text>
+  </ion-list>
+</ion-content>

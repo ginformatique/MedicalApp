@@ -1,0 +1,257 @@
+
+/* Header and toolbar */
+ion-header {
+  ion-toolbar {
+    --background: linear-gradient(135deg, #605eea 0%, #8b77e8 100%);
+    --color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  ion-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
+/* Content */
+ion-content {
+  --background: linear-gradient(to bottom, #f7f9fc 0%, #e8ecef 100%);
+  
+  ion-card {
+    border-radius: 16px;
+    margin: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    animation: documentFadeIn 0.5s ease-out;
+
+    ion-card-header {
+      background: linear-gradient(to right, #f8f9fa 0%, #ffffff 100%);
+      padding: 20px;
+
+      ion-card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+      }
+    }
+
+    ion-card-content {
+      padding: 20px;
+
+      ion-item {
+        --background: #ffffff;
+        --padding-start: 20px;
+        --inner-padding-end: 20px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.2s ease;
+        margin-bottom: 12px;
+
+        &:hover {
+          --background: #f8f9fa;
+        }
+
+        ion-label {
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 4px;
+        }
+
+        ion-select, 
+        ion-textarea, 
+        ion-input, 
+        input[type="file"] {
+          --background: #f7f9fc;
+          --padding-start: 12px;
+          font-size: 0.9rem;
+          color: #333;
+          margin-top: 20px;
+        }
+
+        ion-textarea {
+          --padding-top: 12px;
+          --padding-bottom: 12px;
+          border-radius: 8px;
+          border: 1px solid #e0e0e0;
+        }
+
+        ion-select {
+          max-width: 100%;
+          width: 100%;
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+
+      ion-button {
+        height: 48px;
+        --border-radius: 10px;
+        --background: #605eea;
+        --color: #ffffff;
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: 0.5px;
+        margin-top: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        &[disabled] {
+          --background: #cccccc;
+          --color: #666666;
+          cursor: not-allowed;
+        }
+      }
+
+      ion-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+        text-align: center;
+
+        p {
+          font-size: 1rem;
+          color: #666;
+          font-weight: 500;
+        }
+      }
+
+      ion-list {
+        background: transparent;
+        padding: 0;
+        margin-top: 12px;
+        margin-bottom: 12px;
+
+        ion-item {
+          --background: #f7f9fc;
+          border-radius: 8px;
+          margin-bottom: 8px;
+
+          ion-label {
+            font-size: 0.9rem;
+            color: #333;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Custom styling for file input */
+input[type="file"] {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f7f9fc;
+  border: 1px dashed #605eea;
+  width: 100%;
+  color: #333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background-color: #eef1f7;
+    border-color: #8b77e8;
+  }
+}
+
+/* Select option styling */
+ion-select-option {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Animation for card fade-in */
+@keyframes documentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+  ion-header {
+    ion-title {
+      font-size: 1.2rem;
+    }
+  }
+
+  ion-content {
+    ion-card {
+      margin: 12px;
+
+      ion-card-header {
+        padding: 16px;
+
+        ion-card-title {
+          font-size: 1.2rem;
+        }
+      }
+
+      ion-card-content {
+        padding: 16px;
+
+        ion-item {
+          --padding-start: 16px;
+          --inner-padding-end: 16px;
+          margin-bottom: 8px;
+
+          ion-label {
+            font-size: 0.9rem;
+          }
+
+          ion-select, 
+          ion-textarea, 
+          ion-input {
+            font-size: 0.85rem;
+          }
+        }
+
+        ion-button {
+          height: 44px;
+          font-size: 0.9rem;
+          margin-top: 12px;
+        }
+
+        ion-text {
+          padding: 16px 0;
+
+          p {
+            font-size: 0.9rem;
+          }
+        }
+
+        ion-list {
+          margin-top: 8px;
+          margin-bottom: 8px;
+
+          ion-item {
+            margin-bottom: 6px;
+
+            ion-label {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  input[type="file"] {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+}

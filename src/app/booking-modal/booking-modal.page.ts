@@ -188,7 +188,7 @@ export class BookingModalPage implements OnInit {
         medecinId: this.doctorId,
         date: this.selectedDate.split('T')[0],
         heure: this.selectedSlot,
-        status: 'Confirmé'
+        status: 'en attente'
       };
 
       const appointment: any = await this.appointmentService.createAppointment(appointmentData).toPromise();
@@ -201,14 +201,14 @@ export class BookingModalPage implements OnInit {
       this.isConfirmed = true;
 
       // Envoi de la notification
-      const notificationMessage = `Rendez-vous confirmé avec Dr. ${this.doctorName} le ${this.formatDate(this.selectedDate)} à ${this.selectedSlot}`;
+      const notificationMessage = `Rendez-vous réservé avec Dr. ${this.doctorName} le ${this.formatDate(this.selectedDate)} à ${this.selectedSlot}`;
       await this.notificationService.createNotification(
         this.currentPatientId,
         notificationMessage
       ).toPromise();
 
       await loading.dismiss();
-      await this.showAlert('Succès', 'Rendez-vous confirmé! Une notification a été ajoutée à votre profil.', () => {});
+      await this.showAlert('Succès', 'Rendez-vous réservé! Une notification a été ajoutée à votre profil.', () => {});
       this.loadPatientAppointments();
     } catch (error: any) {
       console.error('Erreur réservation:', error);

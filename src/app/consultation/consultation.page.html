@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Ajouter une consultation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scroll-y="true">
+  <!-- Sélection du rendez-vous -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Sélectionner un rendez-vous</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Patient</ion-label>
+        <ion-select [(ngModel)]="selectedRendezvous" (ngModelChange)="onRendezvousChange()" placeholder="Sélectionnez un rendez-vous" [disabled]="!allRendezvous.length">
+          <ion-select-option *ngFor="let rdv of allRendezvous" [value]="rdv" [disabled]="rdv.status !== 'Confirmé'">
+            {{ rdv.patientName }} - {{ rdv.date }} à {{ rdv.heure }} (Statut : {{ rdv.status }})
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-text *ngIf="!allRendezvous.length">
+        <p class="ion-padding">Aucun rendez-vous trouvé.</p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Formulaire de création de consultation -->
+  <ion-card *ngIf="selectedRendezvous && selectedRendezvous.status === 'Confirmé'">
+    <ion-card-header>
+      <ion-card-title>Créer une consultation pour {{ selectedRendezvous.patientName }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Diagnostic</ion-label>
+        <ion-textarea [(ngModel)]="diagnostic" rows="3" required placeholder="Entrez le diagnostic (ex: 'Veuillez fournir un scanner')"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Prescription</ion-label>
+        <ion-textarea [(ngModel)]="prescription" rows="3" required placeholder="Entrez la prescription"></ion-textarea>
+      </ion-item>
+      <!-- Chargement de documents -->
+      <ion-item>
+        <ion-label>Charger des documents</ion-label>
+        <input type="file" accept=".pdf,.png,.jpg,.jpeg,.gif" multiple (change)="onFileChange($event)" />
+      </ion-item>
+      <ion-list *ngIf="documents.length > 0">
+        <ion-item *ngFor="let doc of documents">
+          <ion-label>{{ doc.name }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" (click)="createConsultation()">Enregistrer la consultation</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Espace supplémentaire pour éviter que le contenu ne soit masqué -->
+  <div style="height: 20px;"></div>
+</ion-content>
