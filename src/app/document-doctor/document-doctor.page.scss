@@ -1,0 +1,194 @@
+/* Header and toolbar */
+.header-toolbar {
+    --background: linear-gradient(135deg, #605eea 0%, #8b77e8 100%);
+    --color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+    ion-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+  
+  /* Content */
+  ion-content {
+    --background: linear-gradient(to bottom, #f7f9fc 0%, #e8ecef 100%);
+    
+    .documents-list {
+      background: transparent;
+      margin-bottom: 16px;
+      
+      ion-list-header {
+        background: transparent;
+        
+        ion-label {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 8px;
+        }
+      }
+      
+      ion-item-sliding {
+        margin-bottom: 12px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        animation: documentFadeIn 0.5s ease-out;
+        
+        ion-item {
+          --background: #ffffff;
+          --padding-start: 16px;
+          --inner-padding-end: 16px;
+          --border-radius: 12px;
+          transition: background 0.2s ease;
+          
+          &:hover {
+            --background: #f8f9fa;
+          }
+          
+          ion-icon {
+            font-size: 24px;
+            color: #605eea;
+            margin-right: 16px;
+          }
+          
+          ion-label {
+            h2 {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: #333;
+              margin-bottom: 6px;
+            }
+            
+            p {
+              font-size: 0.9rem;
+              color: #666;
+              margin-bottom: 4px;
+              line-height: 1.4;
+              
+              &.meta-info {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 8px;
+                margin-top: 8px;
+                font-size: 0.8rem;
+                color: #888;
+                
+                span {
+                  display: inline-flex;
+                  align-items: center;
+                }
+              }
+            }
+            
+            ion-badge {
+              --background: #ff4961;
+              --color: #ffffff;
+              font-size: 0.75rem;
+              padding: 4px 8px;
+              border-radius: 12px;
+              font-weight: 500;
+              margin-right: 8px;
+              
+              &[color="medium"] {
+                --background: #92949c;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 16px;
+      background: #ffffff;
+      border-radius: 16px;
+      margin: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      
+      ion-icon {
+        font-size: 64px;
+        color: #d1d1d1;
+        margin-bottom: 16px;
+      }
+      
+      p {
+        font-size: 1.1rem;
+        color: #888;
+        text-align: center;
+      }
+    }
+    
+    .loading-spinner {
+      display: block;
+      margin: 48px auto;
+      width: 48px;
+      height: 48px;
+      color: #605eea;
+    }
+  }
+  
+  /* Animation for item fade-in */
+  @keyframes documentFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive design */
+  @media (max-width: 576px) {
+    .header-toolbar {
+      ion-title {
+        font-size: 1.2rem;
+      }
+    }
+    
+    ion-content {
+      .documents-list {
+        ion-list-header {
+          ion-label {
+            font-size: 1.1rem;
+          }
+        }
+        
+        ion-item-sliding {
+          margin-bottom: 10px;
+          
+          ion-item {
+            --padding-start: 12px;
+            --inner-padding-end: 12px;
+            
+            ion-icon {
+              font-size: 22px;
+            }
+            
+            ion-label {
+              h2 {
+                font-size: 1rem;
+              }
+              
+              p {
+                font-size: 0.85rem;
+                
+                &.meta-info {
+                  font-size: 0.75rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

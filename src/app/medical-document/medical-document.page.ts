@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DocumentService } from '../services/document.service';
@@ -54,10 +53,7 @@ export class MedicalDocumentPage implements OnInit {
 
     if (this.consultationId) {
       this.newDocument.consultationId = this.consultationId;
-    }
-
-    // Load doctors for selection if no consultationId
-    if (!this.consultationId) {
+    } else {
       await this.loadDoctors();
     }
 
@@ -75,9 +71,12 @@ export class MedicalDocumentPage implements OnInit {
 
   async loadDoctors() {
     try {
-      const doctors: any = await this.documentService.getDoctors().toPromise();
+      const doctors: any = await this.documentService.getDoctorsFromAppointments(this.patientId).toPromise();
       this.doctors = Array.isArray(doctors) ? doctors : [];
-      console.log('Doctors loaded:', this.doctors.map(d => ({ id: d.id, nom: d.nom, prenom: d.prenom })));
+      console.log('Doctors from appointments loaded:', this.doctors.map(d => ({ id: d._id, nom: d.nom, prenom: d.prenom })));
+      if (this.doctors.length === 0) {
+        await this.showToast('Vous n\'avez aucun rendez-vous actif. Prenez un rendez-vous pour envoyer des documents.', 'warning');
+      }
     } catch (error) {
       console.error('Erreur chargement médecins:', error);
       await this.showToast('Erreur lors du chargement des médecins', 'danger');
@@ -137,7 +136,6 @@ export class MedicalDocumentPage implements OnInit {
       return;
     }
 
-    // Require doctorId if no consultationId
     if (!this.newDocument.consultationId && !this.newDocument.doctorId) {
       await this.showToast('Veuillez sélectionner un médecin', 'warning');
       return;
@@ -159,8 +157,11 @@ export class MedicalDocumentPage implements OnInit {
           console.log('Fetching consultation for ID:', this.newDocument.consultationId);
           const consultation = await this.documentService.getConsultation(this.newDocument.consultationId).toPromise();
           console.log('Consultation response:', consultation);
-          if (!consultation || !consultation.medecinId) {
-            throw new Error('Consultation invalide ou ID médecin manquant');
+          if (!consultation) {
+            throw new Error('Consultation non trouvée');
+          }
+          if (!consultation.medecinId) {
+            throw new Error('ID médecin manquant dans la consultation');
           }
           if (!/^[0-9a-fA-F]{24}$/.test(consultation.medecinId)) {
             throw new Error('ID médecin de la consultation invalide');
@@ -168,7 +169,7 @@ export class MedicalDocumentPage implements OnInit {
           doctorId = consultation.medecinId;
         } catch (error) {
           console.error('Erreur lors de la récupération de la consultation:', error);
-          throw new Error('Impossible de récupérer le médecin associé à la consultation');
+          throw new Error(`Erreur consultation: ${'Erreur inconnue'}`);
         }
       }
 
@@ -176,7 +177,6 @@ export class MedicalDocumentPage implements OnInit {
         throw new Error('ID médecin manquant');
       }
 
-      // Validate doctorId format
       if (!/^[0-9a-fA-F]{24}$/.test(doctorId)) {
         console.error('Invalid doctorId format:', doctorId);
         throw new Error('ID médecin invalide');

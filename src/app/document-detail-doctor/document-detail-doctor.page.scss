@@ -1,0 +1,226 @@
+/* Header and toolbar */
+ion-toolbar {
+    --background: linear-gradient(135deg, #605eea 0%, #8b77e8 100%);
+    --color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+    ion-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+    }
+  
+    ion-button {
+      --color: #ffffff;
+      font-weight: 500;
+      transition: opacity 0.2s ease;
+  
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+  
+  /* Content */
+  ion-content {
+    --background: linear-gradient(to bottom, #f7f9fc 0%, #e8ecef 100%);
+  
+    ion-card {
+      border-radius: 16px;
+      margin: 16px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      animation: cardFadeIn 0.5s ease-out;
+  
+      ion-card-header {
+        background: linear-gradient(to right, #f8f9fa 0%, #ffffff 100%);
+        padding: 20px;
+  
+        ion-card-title {
+          font-size: 1.4rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 8px;
+        }
+  
+        ion-card-subtitle {
+          font-size: 1rem;
+          color: #666;
+          font-weight: 400;
+        }
+      }
+  
+      ion-card-content {
+        padding: 20px;
+  
+        p {
+          font-size: 1rem;
+          color: #555;
+          margin-bottom: 12px;
+          line-height: 1.5;
+  
+          strong {
+            color: #333;
+            font-weight: 600;
+          }
+        }
+  
+        h3 {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #333;
+          margin: 24px 0 16px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #eaeaea;
+        }
+  
+        ion-list {
+          background: transparent;
+          margin-bottom: 24px;
+  
+          ion-item {
+            --background: #f8f9fa;
+            --padding-start: 16px;
+            --inner-padding-end: 16px;
+            --min-height: auto;
+            border-radius: 12px;
+            margin-bottom: 8px;
+  
+            ion-label {
+              margin: 12px 0;
+  
+              p {
+                margin: 6px 0;
+                
+                &:first-child {
+                  font-size: 1rem;
+                  color: #333;
+                  font-weight: 500;
+                }
+  
+                small {
+                  color: #888;
+                  font-size: 0.8rem;
+                }
+              }
+            }
+          }
+        }
+  
+        ion-item {
+          --background: transparent;
+          --padding-start: 0;
+          --inner-padding-end: 0;
+          margin-bottom: 16px;
+  
+          ion-label {
+            color: #555;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+          }
+  
+          ion-textarea {
+            --background: #f8f9fa;
+            --padding-start: 16px;
+            --padding-end: 16px;
+            --padding-top: 12px;
+            --padding-bottom: 12px;
+            margin-top: 8px;
+            border-radius: 12px;
+            border: 1px solid #e1e4e8;
+            
+            &::part(native) {
+              border-radius: 12px;
+            }
+          }
+        }
+  
+        ion-button {
+          --background: #605eea;
+          --color: #ffffff;
+          height: 48px;
+          --border-radius: 10px;
+          font-weight: 500;
+          text-transform: none;
+          letter-spacing: 0.5px;
+          margin-top: 8px;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+    }
+  }
+  
+  /* Animation for card fade-in */
+  @keyframes cardFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive design */
+  @media (max-width: 576px) {
+    ion-toolbar {
+      ion-title {
+        font-size: 1.2rem;
+      }
+    }
+  
+    ion-card {
+      margin: 12px;
+  
+      ion-card-header {
+        padding: 16px;
+  
+        ion-card-title {
+          font-size: 1.2rem;
+        }
+  
+        ion-card-subtitle {
+          font-size: 0.9rem;
+        }
+      }
+  
+      ion-card-content {
+        padding: 16px;
+  
+        p {
+          font-size: 0.95rem;
+          margin-bottom: 10px;
+        }
+  
+        h3 {
+          font-size: 1.1rem;
+          margin: 20px 0 12px;
+        }
+  
+        ion-list {
+          ion-item {
+            ion-label {
+              p {
+                &:first-child {
+                  font-size: 0.95rem;
+                }
+              }
+            }
+          }
+        }
+  
+        ion-button {
+          height: 44px;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }

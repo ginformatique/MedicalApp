@@ -33,8 +33,8 @@ export class BookingModalPage implements OnInit {
     private medecinService: MedecinService,
     private notificationService: NotificationService,
     private navCtrl: NavController,
-    private authService: AuthService, // Add AuthService
-    private router: Router // Add Router
+    private authService: AuthService,
+    private router: Router 
   ) {}
 
   ngOnInit() {

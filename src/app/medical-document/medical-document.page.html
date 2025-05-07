@@ -37,7 +37,7 @@
         <ion-item *ngIf="!consultationId">
           <ion-label position="stacked">Médecin destinataire</ion-label>
           <ion-select [(ngModel)]="newDocument.doctorId" name="doctorId" interface="popover">
-            <ion-select-option *ngFor="let doctor of doctors" [value]="doctor.id">
+            <ion-select-option *ngFor="let doctor of doctors" [value]="doctor._id">
               {{ doctor.prenom }} {{ doctor.nom }} ({{ doctor.specialite }})
             </ion-select-option>
           </ion-select>

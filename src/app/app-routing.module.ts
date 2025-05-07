@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth.guard';
-import { DoctorGuard } from './doctor.guard'; // Import the DoctorGuard
+import { DoctorGuard } from './doctor.guard';
 
 const routes: Routes = [
   {
@@ -25,7 +25,7 @@ const routes: Routes = [
     path: 'doctors',
     loadChildren: () => import('./doctors/doctors.module').then((m) => m.DoctorsPageModule),
     canActivate: [AuthGuard],
-    data: { roles: ['medecin', 'patient'] }, // Changed 'doctor' to 'medecin'
+    data: { roles: ['medecin', 'patient'] },
   },
   {
     path: 'map',
@@ -56,14 +56,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('./medical-document/medical-document.module').then((m) => m.MedicalDocumentPageModule),
     canActivate: [AuthGuard],
-    data: { roles: ['patient', 'medecin'] }, // Changed 'doctor' to 'medecin'
+    data: { roles: ['patient', 'medecin'] },
   },
   {
     path: 'document-details',
     loadChildren: () =>
       import('./document-details/document-details.module').then((m) => m.DocumentDetailsPageModule),
     canActivate: [AuthGuard],
-    data: { roles: ['patient', 'medecin'] }, // Changed 'doctor' to 'medecin'
+    data: { roles: ['patient', 'medecin'] },
   },
   {
     path: 'patient-profile/:id',
@@ -81,26 +81,34 @@ const routes: Routes = [
     path: 'doctor-prof/:id',
     loadChildren: () => import('./doctor-prof/doctor-prof.module').then((m) => m.DoctorProfPageModule),
     canActivate: [DoctorGuard],
-    data: { roles: ['medecin'] }, // Changed 'doctor' to 'medecin'
+    data: { roles: ['medecin'] },
   },
   {
     path: 'consultation/:id',
     loadChildren: () => import('./consultation/consultation.module').then((m) => m.ConsultationPageModule),
-    canActivate: [DoctorGuard], // Restrict to doctors only
+    canActivate: [DoctorGuard],
   },
   {
-    path: 'rendezvous/:id', // Updated to include :id parameter
+    path: 'rendezvous/:id',
     loadChildren: () => import('./rendezvous/rendezvous.module').then((m) => m.RendezvousPageModule),
-    canActivate: [DoctorGuard], // Restrict to doctors only
+    canActivate: [DoctorGuard],
+  },
+  {
+    path: 'document-doctor/:id',
+    loadChildren: () => import('./document-doctor/document-doctor.module').then((m) => m.DocumentDoctorPageModule),
+    canActivate: [DoctorGuard],
+    data: { roles: ['medecin'] },
+  },
+  {
+    path: 'document-detail-doctor/:id',
+    loadChildren: () => import('./document-detail-doctor/document-detail-doctor.module').then((m) => m.DocumentDetailDoctorPageModule),
+    canActivate: [DoctorGuard],
+    data: { roles: ['medecin'] },
   },
   {
     path: '**',
     redirectTo: 'home',
-  },  {
-    path: 'document-doctor',
-    loadChildren: () => import('./document-doctor/document-doctor.module').then( m => m.DocumentDoctorPageModule)
-  },
-
+  }
 ];
 
 @NgModule({

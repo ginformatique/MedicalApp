@@ -7,13 +7,13 @@ from werkzeug.utils import secure_filename
 import os
 import re
 import uuid
-import json 
+import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config["MONGO_URI"] = "mongodb://localhost:27017/medical_db"
 mongo = PyMongo(app)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = 'Uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 def parse_json(data):
@@ -94,6 +94,7 @@ def get_medecins():
     response = [parse_json(medecin) for medecin in medecins]
     return jsonify(response)
 
+
 @app.route('/api/medecins/<id>', methods=['GET'])
 def get_medecin(id):
     try:
@@ -106,6 +107,56 @@ def get_medecin(id):
             return jsonify({"error": "Médecin non trouvé"}), 404
     except Exception as e:
         return jsonify({"error": "Erreur serveur", "message": str(e)}), 500
+
+# Fetch Doctors from Patient's Appointments
+@app.route('/api/patients/<patient_id>/doctors-from-appointments', methods=['GET'])
+def get_doctors_from_appointments(patient_id):
+    try:
+        if not ObjectId.is_valid(patient_id):
+            return jsonify({"error": "ID patient invalide"}), 400
+        appointments = list(mongo.db.rendezvous.find({"patientId": patient_id, "status": {"$ne": "Annulé"}}))
+        if not appointments:
+            return jsonify([]), 200
+        doctor_ids = [str(appointment['medecinId']) for appointment in appointments]
+        doctor_ids = list(set(doctor_ids))
+        doctors = list(mongo.db.medecins.find({"_id": {"$in": [ObjectId(id) for id in doctor_ids]}}))
+        return jsonify(parse_json(doctors)), 200
+    except Exception as e:
+        app.logger.error(f"Erreur récupération médecins des rendez-vous: {str(e)}")
+        return jsonify({"error": "Erreur serveur"}), 500
+
+# New Endpoint: Fetch Documents for a Doctor
+@app.route('/api/medecins/<medecin_id>/documents', methods=['GET'])
+def get_doctor_documents(medecin_id):
+    try:
+        if not ObjectId.is_valid(medecin_id):
+            return jsonify({"error": "ID médecin invalide"}), 400
+        documents = list(mongo.db.documents.find({"doctorId": medecin_id}))
+        if not documents:
+            return jsonify([]), 200
+        documents_list = []
+        patient_ids = list(set([doc['patientId'] for doc in documents if ObjectId.is_valid(doc['patientId'])]))
+        patients = {str(p['_id']): p for p in mongo.db.patients.find({"_id": {"$in": [ObjectId(pid) for pid in patient_ids]}})}
+        for doc in documents:
+            patient = patients.get(doc['patientId'], {})
+            document_data = {
+                "id": str(doc['_id']),
+                "filename": doc['name'],
+                "fileType": doc['fileType'],
+                "description": doc['description'],
+                "uploadDate": doc['uploadDate'].isoformat(),
+                "isUrgent": doc['isUrgent'],
+                "status": doc['status'],
+                "patientId": doc['patientId'],
+                "patientName": f"{patient.get('firstName', 'Inconnu')} {patient.get('lastName', '')}".strip(),
+                "consultationId": doc.get('consultationId', None),
+                "notes": doc.get('notes', [])  # Include notes field
+            }
+            documents_list.append(document_data)
+        return jsonify(documents_list), 200
+    except Exception as e:
+        app.logger.error(f"Erreur lors de la récupération des documents du médecin {medecin_id}: {str(e)}")
+        return jsonify({"error": "Erreur serveur"}), 500
 
 # Update Creneau Status
 @app.route('/api/medecins/<medecin_id>/creneaux', methods=['PATCH'])
@@ -403,13 +454,22 @@ def upload_document(patient_id):
         consultation_id = metadata.get("consultationId")
         if not doctor_id or not ObjectId.is_valid(doctor_id):
             return jsonify({"error": "ID médecin invalide ou manquant"}), 400
-        # Validate consultation_id only if provided
+        if not consultation_id:
+            appointment = mongo.db.rendezvous.find_one({
+                "patientId": patient_id,
+                "medecinId": doctor_id,
+                "status": {"$ne": "Annulé"}
+            })
+            if not appointment:
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+                return jsonify({"error": "Vous ne pouvez envoyer des documents qu'aux médecins avec lesquels vous avez un rendez-vous actif"}), 400
         if consultation_id and not ObjectId.is_valid(consultation_id):
             return jsonify({"error": "ID consultation invalide"}), 400
         document = {
             "patientId": patient_id,
             "doctorId": doctor_id,
-            "consultationId": consultation_id if consultation_id else None,  # Store as None if not provided
+            "consultationId": consultation_id if consultation_id else None,
             "name": filename,
             "type": metadata.get("type", "other"),
             "fileType": filename.split('.')[-1].lower(),
@@ -420,16 +480,14 @@ def upload_document(patient_id):
             "description": metadata.get("description", ""),
             "tags": metadata.get("tags", []),
             "isUrgent": metadata.get("isUrgent", False),
-            "metadata": metadata.get("metadata", {})
+            "metadata": metadata.get("metadata", {}),
+            "notes": []  # Initialize notes field
         }
         result = mongo.db.documents.insert_one(document)
         document['_id'] = str(result.inserted_id)
-
-        # Update consultation with document ID if consultation_id is provided
         if consultation_id:
             consultation = mongo.db.consultations.find_one({"_id": ObjectId(consultation_id)})
             if not consultation:
-                # Clean up uploaded file and document if consultation is invalid
                 if os.path.exists(filepath):
                     os.remove(filepath)
                 mongo.db.documents.delete_one({"_id": result.inserted_id})
@@ -438,8 +496,6 @@ def upload_document(patient_id):
                 {"_id": ObjectId(consultation_id)},
                 {"$push": {"documents": str(result.inserted_id)}}
             )
-
-        # Send notification to doctor
         notification_message = (
             f"Un nouveau document a été envoyé par le patient {patient.get('firstName', 'Inconnu')} "
             f"{patient.get('lastName', '')} le {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}. "
@@ -455,7 +511,6 @@ def upload_document(patient_id):
             'createdAt': datetime.utcnow(),
             'updatedAt': datetime.utcnow()
         })
-
         return jsonify({"message": "Document enregistré avec succès", "document": parse_json(document)}), 201
     except Exception as e:
         if 'filepath' in locals() and os.path.exists(filepath):
@@ -485,7 +540,8 @@ def get_patient_documents(patient_id):
                 "uploadDate": doc['uploadDate'].isoformat(),
                 "isUrgent": doc['isUrgent'],
                 "status": doc['status'],
-                "consultationId": doc.get('consultationId')
+                "consultationId": doc.get('consultationId'),
+                "notes": doc.get('notes', [])  # Include notes field
             }
             documents_list.append(document_data)
         return jsonify(documents_list), 200
@@ -501,7 +557,6 @@ def delete_document(document_id):
         document = mongo.db.documents.find_one({"_id": ObjectId(document_id)})
         if not document:
             return jsonify({"error": "Document non trouvé"}), 404
-        # Remove document ID from consultation if associated
         if document.get('consultationId'):
             mongo.db.consultations.update_one(
                 {"_id": ObjectId(document['consultationId'])},
@@ -560,8 +615,6 @@ def create_consultation():
             return jsonify({"error": "Rendezvous is not in 'Confirmé' status"}), 400
         if rendezvous['medecinId'] != medecin_id or str(rendezvous['patientId']) != patient_id:
             return jsonify({"error": "Rendezvous does not match the provided doctor or patient"}), 400
-
-        # Gestion des documents uploadés
         document_ids = []
         if 'documents' in data:
             for doc in data['documents']:
@@ -577,12 +630,11 @@ def create_consultation():
                     "description": doc.get("description", ""),
                     "tags": doc.get("tags", []),
                     "isUrgent": doc.get("isUrgent", False),
-                    "metadata": doc.get("metadata", {})
+                    "metadata": doc.get("metadata", {}),
+                    "notes": []  # Initialize notes field
                 }
                 result = mongo.db.documents.insert_one(document)
                 document_ids.append(str(result.inserted_id))
-
-        # Créer la consultation
         consultation = {
             "rendezvousId": rendezvous_id,
             "medecinId": medecin_id,
@@ -597,8 +649,6 @@ def create_consultation():
         consultation['_id'] = str(result.inserted_id)
         consultation['createdAt'] = consultation['createdAt'].isoformat()
         consultation['updatedAt'] = consultation['updatedAt'].isoformat()
-
-        # Envoyer une notification au patient avec le diagnostic
         diagnostic = data['diagnostic']
         notification_message = (
             f"Votre consultation du {rendezvous['date']} à {rendezvous['heure']} a été enregistrée. "
@@ -611,9 +661,8 @@ def create_consultation():
             'isRead': False,
             'createdAt': datetime.utcnow(),
             'updatedAt': datetime.utcnow(),
-            'consultationId': str(consultation['_id'])  # Include consultationId in notification
+            'consultationId': str(consultation['_id'])
         })
-
         return jsonify({"message": "Consultation created successfully", "consultation": parse_json(consultation)}), 201
     except Exception as e:
         app.logger.error(f"Error creating consultation: {str(e)}")
@@ -833,7 +882,6 @@ def accept_rendezvous(medecin_id, rendezvous_id):
         )
         if result.modified_count == 0:
             return jsonify({"error": "Failed to update rendezvous status"}), 500
-        # Send notification to patient
         patient_id = rendezvous['patientId']
         notification_message = f"Votre rendez-vous du {rendezvous['date']} à {rendezvous['heure']} a été accepté par le médecin."
         mongo.db.notifications.insert_one({
@@ -872,7 +920,6 @@ def reject_rendezvous(medecin_id, rendezvous_id):
         )
         if result.modified_count == 0:
             return jsonify({"error": "Failed to update rendezvous status"}), 500
-        # Send notification to patient
         patient_id = rendezvous['patientId']
         notification_message = f"Votre rendez-vous du {rendezvous['date']} à {rendezvous['heure']} a été rejeté par le médecin."
         mongo.db.notifications.insert_one({
@@ -891,5 +938,56 @@ def reject_rendezvous(medecin_id, rendezvous_id):
         app.logger.error(f"Error rejecting rendezvous: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+@app.route('/api/documents/<document_id>/tags', methods=['PATCH', 'OPTIONS'])
+def add_document_tag(document_id):
+    if request.method == 'OPTIONS':
+        return '', 200  # Respond to preflight with 200 OK
+    app.logger.info(f"Received request to add tag to document {document_id}")
+    try:
+        app.logger.info(f"Validating document_id: {document_id}")
+        if not ObjectId.is_valid(document_id):
+            return jsonify({"error": "ID document invalide"}), 400
+        data = request.get_json()
+        app.logger.info(f"Request data: {data}")
+        if not data or 'doctorId' not in data or 'tag' not in data:
+            return jsonify({"error": "Les champs doctorId et tag sont requis"}), 400
+        doctor_id = data['doctorId']
+        tag = data['tag'].strip()
+        app.logger.info(f"Doctor ID: {doctor_id}, Tag: {tag}")
+        if not ObjectId.is_valid(doctor_id):
+            return jsonify({"error": "ID médecin invalide"}), 400
+        if not tag:
+            return jsonify({"error": "Le tag ne peut pas être vide"}), 400
+        document = mongo.db.documents.find_one({"_id": ObjectId(document_id)})
+        app.logger.info(f"Document found: {document}")
+        if not document:
+            return jsonify({"error": "Document non trouvé"}), 404
+        if document['doctorId'] != doctor_id:
+            return jsonify({"error": "Non autorisé : ce document n'est pas assigné à ce médecin"}), 403
+        new_tag = {
+            "tag": tag,
+            "doctorId": doctor_id,
+            "createdAt": datetime.utcnow()
+        }
+        app.logger.info(f"Adding tag: {new_tag}")
+        result = mongo.db.documents.update_one(
+            {"_id": ObjectId(document_id)},
+            {"$push": {"tags": new_tag}}
+        )
+        app.logger.info(f"Update result: {result.modified_count} document(s) modified")
+        if result.modified_count == 0:
+            return jsonify({"error": "Échec de l'ajout du tag"}), 400
+        updated_document = mongo.db.documents.find_one({"_id": ObjectId(document_id)})
+        app.logger.info(f"Updated document: {updated_document}")
+        return jsonify({
+            "message": "Tag ajouté avec succès",
+            "document": parse_json(updated_document)
+        }), 200
+    except Exception as e:
+        app.logger.error(f"Erreur lors de l'ajout du tag au document {document_id}: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+        
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

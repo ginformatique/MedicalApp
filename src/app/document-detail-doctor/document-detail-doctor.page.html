@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Détails du document</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Fermer</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="document">
+    <ion-card-header>
+      <ion-card-title>{{ document.filename }}</ion-card-title>
+      <ion-card-subtitle>{{ document.description }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Type:</strong> {{ document.fileType }}</p>
+      <p><strong>Date d'upload:</strong> {{ document.uploadDate | date:'medium' }}</p>
+      <p><strong>Statut:</strong> {{ document.status }}</p>
+      <p><strong>Urgent:</strong> {{ document.isUrgent ? 'Oui' : 'Non' }}</p>
+      <p><strong>Patient:</strong> {{ document.patientName }}</p>
+
+      <h3>Notes</h3>
+      <ion-list *ngIf="document.tags && document.tags.length > 0; else noTags">
+        <ion-item *ngFor="let tag of document.tags">
+          <ion-label>
+            <p>{{ tag.tag }}</p>
+            <p><small>Par Dr. {{ tag.doctorId }} le {{ tag.createdAt | date:'medium' }}</small></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <ng-template #noTags>
+        <p>Aucune note pour ce document.</p>
+      </ng-template>
+
+      <ion-item>
+        <ion-label position="stacked">Ajouter une note</ion-label>
+        <ion-textarea [(ngModel)]="newNote" placeholder="Entrez votre note..."></ion-textarea>
+      </ion-item>
+      <ion-button expand="block" (click)="addNote()">Ajouter la note</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

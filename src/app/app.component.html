@@ -37,7 +37,7 @@
               <ion-icon name="person-outline" slot="start"></ion-icon>
               <ion-label>Mon Profil</ion-label>
             </ion-item>
-            <ion-item routerLink="#" routerLinkActive="selected">
+            <ion-item [routerLink]="userId ? ['/document-doctor', userId] : '/login'" routerLinkActive="selected">
               <ion-icon name="people-outline" slot="start"></ion-icon>
               <ion-label>Documents Patients</ion-label>
             </ion-item>
@@ -66,7 +66,7 @@
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
 
-  <ion-header *ngIf="!(router.url.includes('/patient') || router.url.includes('/medical-history') || router.url.includes('/medical-document') || router.url.includes('/doctor-profile') || router.url.includes('/register') || router.url.includes('/login') || router.url.includes('/rendezvous') || router.url.includes('/consultation'))" class="purple-tab-bar">
+  <ion-header *ngIf="!(router.url.includes('/patient') || router.url.includes('/medical-history') || router.url.includes('/medical-document') ||  router.url.includes('/doctor-prof')  || router.url.includes('/doctor-profile') || router.url.includes('/register') || router.url.includes('/login') || router.url.includes('/rendezvous') || router.url.includes('/consultation'))" class="purple-tab-bar">
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>

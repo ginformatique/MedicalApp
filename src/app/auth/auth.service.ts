@@ -16,12 +16,11 @@ export interface Patient {
   address?: string;
   phone?: string;
   createdAt?: string;
-
-  specialite?: string;   // Added for doctors
-  note?: string;         // Added for doctors
-  propos?: string;       // Added for doctors
-  telephone?: string;    // Added for doctors
-  image?: string;        // Added for doctors
+  specialite?: string;  
+  note?: string;         
+  propos?: string;   
+  telephone?: string; 
+  image?: string;      
 }
 
 export interface RegisterResponse {
@@ -97,7 +96,6 @@ export class AuthService {
           this.storeUser(response.user);
           const userId = response.user.patientId || response.user.id;
           const role = response.user.role.toLowerCase();
-
           if (role === 'patient') {
             this.router.navigate([`/patient-profile/${userId}`], { replaceUrl: true });
           } else if (role === 'medecin') {
@@ -108,7 +106,6 @@ export class AuthService {
       catchError(this.handleError)
     );
   }
-
   updateUserProfile(updatedData: Partial<Patient>): Observable<UpdateProfileResponse> {
     const user = this.getCurrentUser();
     if (!user) {
